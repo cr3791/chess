@@ -10,6 +10,7 @@ import java.util.Collection;
  */
 public class ChessGame {
 
+    ChessPiece[][] playing_board = new ChessPiece[8][8];
     public ChessGame() {
 
     }
