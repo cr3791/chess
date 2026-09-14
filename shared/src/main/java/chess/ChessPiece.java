@@ -1,7 +1,9 @@
 package chess;
 
+import javax.management.RuntimeErrorException;
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Represents a single chess piece
@@ -53,9 +55,47 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
+
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        switch(piece.getPieceType()){
+            case KING:
+                king_moves(board, piece, myPosition, possible_moves);
+                break;
+            case QUEEN:
+                break;
+            case ROOK:
+                break;
+            case BISHOP:
+                break;
+            case KNIGHT:
+                break;
+            case PAWN:
+                break;
+            default:
+                throw new RuntimeException("Not a valid piece");
+        }
+        /*
         if(piece.getPieceType() == PieceType.BISHOP){
             return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
-        }
-        return List.of();
+        */
+        return possible_moves;
     }
+
+    private void king_moves(ChessBoard board, ChessPiece piece, ChessPosition myPosition, ArrayList<ChessMove> possible_moves){
+
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        for (int i = -1; i < 2; i++){
+            for (int j = -1; j < 2; j++){
+                ChessPosition newPosition = new ChessPosition(row+i, col+j);
+
+                if(newPosition.check_valid_position(board)){
+                    possible_moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+        }
+    }
+
 }
