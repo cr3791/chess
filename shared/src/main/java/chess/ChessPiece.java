@@ -110,4 +110,25 @@ public class ChessPiece {
             }
         }
     }
+
+    private void rook_moves(ChessPosition myPosition, ArrayList<ChessMove> possible_moves, ChessBoard board, ChessPiece piece){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        int iterator = 0;
+        ChessPosition newPosition = new ChessPosition(row,col);
+
+        for (int i = 0; i<4; i++){
+            switch(i){
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+        }
+    }
 }
