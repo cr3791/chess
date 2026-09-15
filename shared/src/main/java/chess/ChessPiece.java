@@ -55,32 +55,25 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-
         ArrayList<ChessMove> possible_moves = new ArrayList<>();
-        moves(myPosition, possible_moves, board, piece);
 
         return possible_moves;
     }
 
-    private void moves(ChessPosition myPosition, ArrayList<ChessMove> possible_moves, ChessBoard board, ChessPiece piece) {
+    private boolean blocked(ChessPosition myPosition, ChessPiece newPiece, ChessPiece oldPiece){
+        boolean blocked = false;
 
-        switch(piece.getPieceType()){
-            case KING:
-                break;
-            case QUEEN:
-                break;
-            case ROOK:
-                break;
-            case BISHOP:
-                break;
-            case KNIGHT:
-                break;
-            case PAWN:
-                break;
-            default:
-                throw new RuntimeException("Not a valid piece");
+        if(within_bounds(myPosition)){
+            if(empty_space(newPiece)){
+                return true;
+            } else {
+                blocked = true;
+                if (enemy_piece(oldPiece, newPiece)){
+                    return true;
+                }
+            }
         }
-
+        return false;
     }
 
     private boolean within_bounds (ChessPosition myPosition){
@@ -93,15 +86,15 @@ public class ChessPiece {
         return true;
     }
 
-    private boolean empty_space(ChessPiece piece){
-        if (piece== null){
+    private boolean empty_space(ChessPiece newPiece){
+        if (newPiece== null){
             return true;
         }
         return false;
     }
 
-    private boolean enemy_piece(ChessPiece old_piece, ChessPiece new_piece){
-        if(old_piece.getTeamColor() == new_piece.getTeamColor()){
+    private boolean enemy_piece(ChessPiece oldPiece, ChessPiece newPiece){
+        if(oldPiece.getTeamColor() == newPiece.getTeamColor()){
             return false;
         }
         return true;
@@ -123,6 +116,23 @@ public class ChessPiece {
         valid_move = true;
         blocked = false;
     }
+
+    switch(piece.getPieceType()){
+            case KING:
+                break;
+            case QUEEN:
+                break;
+            case ROOK:
+                break;
+            case BISHOP:
+                break;
+            case KNIGHT:
+                break;
+            case PAWN:
+                break;
+            default:
+                throw new RuntimeException("Not a valid piece");
+        }
 
     private void backwards(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
         int row = myPosition.getRow();
