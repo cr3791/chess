@@ -57,14 +57,46 @@ public class ChessPiece {
         ChessPiece piece = board.getPiece(myPosition);
 
         ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        moves(myPosition, possible_moves, board, piece);
+
+        return possible_moves;
+    }
+
+    private boolean check_valid_move(boolean valid_move, boolean blocked, ChessPosition newPosition,  ChessBoard board, ChessPiece piece){
+        if (newPosition.check_valid_position() && !blocked){
+            ChessPiece check_piece = board.getPiece(newPosition);
+
+            if(check_piece == null){
+                valid_move = true;
+            } else if (check_piece.getTeamColor() != piece.getTeamColor()){
+                valid_move = true;
+                blocked = true;
+            } else {
+                valid_move = false;
+                blocked = true;
+            }
+        }
+        valid_move = false;
+        blocked = true;
+
+        return valid_move;
+    }
+
+    private void moves(ChessPosition myPosition, ArrayList<ChessMove> possible_moves, ChessBoard board, ChessPiece piece) {
+        boolean blocked = false;
+        boolean valid_move = true;
 
         switch(piece.getPieceType()){
             case KING:
-                king_moves(myPosition, possible_moves, board, piece);
+                king_moves(valid_move, myPosition, possible_moves, board, piece);
                 break;
             case QUEEN:
                 break;
             case ROOK:
+                //forwards(valid_move, blocked, myPosition, board, piece, possible_moves);
+                //backwards(valid_move, blocked, myPosition, board, piece, possible_moves);
+                //move_right(valid_move, blocked, myPosition, board, piece, possible_moves);
+                //move_left(valid_move, blocked, myPosition, board, piece, possible_moves);
                 break;
             case BISHOP:
                 break;
@@ -75,12 +107,89 @@ public class ChessPiece {
             default:
                 throw new RuntimeException("Not a valid piece");
         }
-        /*
-        if(piece.getPieceType() == PieceType.BISHOP){
-            return List.of(new ChessMove(new ChessPosition(5,4), new ChessPosition(1,8), null));
-        */
-        return possible_moves;
+
     }
+
+    //sideways
+    private void forwards(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        boolean f;
+        do{
+            col +=1;
+            ChessPosition newPosition = new ChessPosition(row,col);
+            f = check_valid_move(valid_move, blocked, newPosition, board, piece);
+            if(f){
+                possible_moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }while(f & !blocked);
+        valid_move = true;
+        blocked = false;
+    }
+
+    private void backwards(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        do{
+            col -=1;
+            ChessPosition newPosition = new ChessPosition(row,col);
+            check_valid_move(valid_move, blocked, newPosition, board, piece);
+            if(valid_move){
+                possible_moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }while(valid_move & !blocked);
+        valid_move = true;
+        blocked = false;
+    }
+
+    private void move_right(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        do{
+            row +=1;
+            ChessPosition newPosition = new ChessPosition(row,col);
+            check_valid_move(valid_move, blocked, newPosition, board, piece);
+            if(valid_move){
+                possible_moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }while(valid_move & !blocked);
+        valid_move = true;
+        blocked = false;
+    }
+
+    private void move_left(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        do{
+            row -=1;
+            ChessPosition newPosition = new ChessPosition(row,col);
+            check_valid_move(valid_move, blocked, newPosition, board, piece);
+            if(valid_move){
+                possible_moves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }while(valid_move & !blocked);
+        valid_move = true;
+        blocked = false;
+    }
+
+    private void king_moves(boolean valid_move, ChessPosition myPosition, ArrayList<ChessMove> possible_moves, ChessBoard board, ChessPiece piece){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        for (int i = -1; i<2; i++){
+            for (int j = -1; j<2; j++){
+                ChessPosition newPosition = new ChessPosition(row+i,col+j);
+
+                check_valid_move(valid_move, false, newPosition, board, piece);
+                if(valid_move && newPosition != myPosition){
+                    possible_moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+
+            }
+        }
+    }
+
+    /*
 
     private boolean check_valid_move(ChessPosition newPosition, ChessBoard board, ChessPiece piece){
         if (newPosition.check_valid_position()){
@@ -115,20 +224,15 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
-        int iterator = 0;
-        ChessPosition newPosition = new ChessPosition(row,col);
+        do{
 
-        for (int i = 0; i<4; i++){
-            switch(i){
-                case 0:
-                    break;
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    break;
-            }
+        }while()
+
+        if(check_valid_move(newPosition, board, piece) && newPosition != myPosition){
+            possible_moves.add(new ChessMove(myPosition, newPosition, null));
         }
+
     }
+
+     */
 }
