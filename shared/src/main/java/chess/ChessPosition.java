@@ -34,13 +34,6 @@ public class ChessPosition {
         return col;
     }
 
-    public boolean check_valid_position(){
-        if ((row > 8) | (row < 1) | (col > 8) | (col < 1)){
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String toString(){
         return String.format("[%d,%d]", row, col);

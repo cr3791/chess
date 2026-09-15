@@ -62,41 +62,14 @@ public class ChessPiece {
         return possible_moves;
     }
 
-    private boolean check_valid_move(boolean valid_move, boolean blocked, ChessPosition newPosition,  ChessBoard board, ChessPiece piece){
-        if (newPosition.check_valid_position() && !blocked){
-            ChessPiece check_piece = board.getPiece(newPosition);
-
-            if(check_piece == null){
-                valid_move = true;
-            } else if (check_piece.getTeamColor() != piece.getTeamColor()){
-                valid_move = true;
-                blocked = true;
-            } else {
-                valid_move = false;
-                blocked = true;
-            }
-        }
-        valid_move = false;
-        blocked = true;
-
-        return valid_move;
-    }
-
     private void moves(ChessPosition myPosition, ArrayList<ChessMove> possible_moves, ChessBoard board, ChessPiece piece) {
-        boolean blocked = false;
-        boolean valid_move = true;
 
         switch(piece.getPieceType()){
             case KING:
-                king_moves(valid_move, myPosition, possible_moves, board, piece);
                 break;
             case QUEEN:
                 break;
             case ROOK:
-                //forwards(valid_move, blocked, myPosition, board, piece, possible_moves);
-                //backwards(valid_move, blocked, myPosition, board, piece, possible_moves);
-                //move_right(valid_move, blocked, myPosition, board, piece, possible_moves);
-                //move_left(valid_move, blocked, myPosition, board, piece, possible_moves);
                 break;
             case BISHOP:
                 break;
@@ -110,6 +83,30 @@ public class ChessPiece {
 
     }
 
+    private boolean within_bounds (ChessPosition myPosition){
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        if((row > 8) | (row < 1) | (col > 8) | (col < 1)){
+            return false;
+        }
+        return true;
+    }
+
+    private boolean empty_space(ChessPiece piece){
+        if (piece== null){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean enemy_piece(ChessPiece old_piece, ChessPiece new_piece){
+        if(old_piece.getTeamColor() == new_piece.getTeamColor()){
+            return false;
+        }
+        return true;
+    }
+/*
     //sideways
     private void forwards(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
         int row = myPosition.getRow();
@@ -189,8 +186,6 @@ public class ChessPiece {
         }
     }
 
-    /*
-
     private boolean check_valid_move(ChessPosition newPosition, ChessBoard board, ChessPiece piece){
         if (newPosition.check_valid_position()){
             ChessPiece check_piece = board.getPiece(newPosition);
@@ -232,6 +227,26 @@ public class ChessPiece {
             possible_moves.add(new ChessMove(myPosition, newPosition, null));
         }
 
+    }
+
+    private boolean check_valid_move(boolean valid_move, boolean blocked, ChessPosition newPosition,  ChessBoard board, ChessPiece piece){
+        if (newPosition.check_valid_position() && !blocked){
+            ChessPiece check_piece = board.getPiece(newPosition);
+
+            if(check_piece == null){
+                valid_move = true;
+            } else if (check_piece.getTeamColor() != piece.getTeamColor()){
+                valid_move = true;
+                blocked = true;
+            } else {
+                valid_move = false;
+                blocked = true;
+            }
+        }
+        valid_move = false;
+        blocked = true;
+
+        return valid_move;
     }
 
      */
