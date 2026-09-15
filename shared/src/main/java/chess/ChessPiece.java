@@ -60,7 +60,7 @@ public class ChessPiece {
 
         switch(piece.getPieceType()){
             case KING:
-                king_moves(board, piece, myPosition, possible_moves);
+                king_moves(myPosition, possible_moves, board, piece);
                 break;
             case QUEEN:
                 break;
@@ -82,20 +82,32 @@ public class ChessPiece {
         return possible_moves;
     }
 
-    private void king_moves(ChessBoard board, ChessPiece piece, ChessPosition myPosition, ArrayList<ChessMove> possible_moves){
+    private boolean check_valid_move(ChessPosition newPosition, ChessBoard board, ChessPiece piece){
+        if (newPosition.check_valid_position()){
+            ChessPiece check_piece = board.getPiece(newPosition);
 
+            if(check_piece == null){
+                return true;
+            } else if (check_piece.getTeamColor() != piece.getTeamColor()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void king_moves(ChessPosition myPosition, ArrayList<ChessMove> possible_moves, ChessBoard board, ChessPiece piece){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
-        for (int i = -1; i < 2; i++){
-            for (int j = -1; j < 2; j++){
-                ChessPosition newPosition = new ChessPosition(row+i, col+j);
+        for (int i = -1; i<2; i++){
+            for (int j = -1; j<2; j++){
+                ChessPosition newPosition = new ChessPosition(row+i,col+j);
 
-                if(newPosition.check_valid_position(board)){
+                if(check_valid_move(newPosition, board, piece) && newPosition != myPosition){
                     possible_moves.add(new ChessMove(myPosition, newPosition, null));
                 }
+
             }
         }
     }
-
 }
