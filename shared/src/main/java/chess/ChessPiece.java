@@ -55,63 +55,69 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-        record Vector(int x, int y){};
-        boolean limit_move = false;
-
-        ArrayList<Vector> vectors = new ArrayList<>();
-        for (int i = -1; i < 2; i++){
-            for (int j = -1; j < 2; j++){
-                vectors.add(new Vector(i,j));
-            }
-        }
-        vectors.remove(new Vector(0,0));
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
 
         switch(piece.getPieceType()){
             case KING:
-                limit_move = true;
+                possible_moves.addAll(king_move(board, myPosition));
+                break;
+            case QUEEN:
+                break;
             case ROOK:
-                vectors.remove(new Vector(1,1));
                 break;
             case BISHOP:
-                vectors.remove(new Vector(0,1));
-                vectors.remove(new Vector(1,0));
                 break;
             case KNIGHT:
-                vectors.clear();
-                limit_move = true;
-                vectors.add(new Vector(1,2));
-                vectors.add(new Vector(2,1));
                 break;
             case PAWN:
-                limit_move = true;
                 break;
             default:
                 throw new RuntimeException("Not a valid piece");
         }
 
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> move(ChessBoard board, ChessPosition myPosition, int x, int y, boolean limiter){
+        boolean end = limiter;
+        int multiplier = 2;
         ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        do{
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow()+x, myPosition.getColumn()+y);
+            if(within_bounds(newPosition)){
+                if(empty_space(board, newPosition)){
+                    possible_moves.add(new ChessMove(myPosition,newPosition,null));
+                } else {
+                    if (enemy_piece(board.getPiece(myPosition), board.getPiece(newPosition))){
+                        possible_moves.add(new ChessMove(myPosition,newPosition,null));
+                    }
+                    end = true;
+                }
+            } else {
+                end = true;
+            }
+            x *= multiplier;
+            y *= multiplier;
+            multiplier+=1;
+        } while (!end);
 
         return possible_moves;
     }
 
-    private ArrayList<Vector> moves(){
+    private ArrayList<ChessMove> king_move(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
 
-    }
-
-    private boolean blocked(ChessPosition myPosition, ChessPiece newPiece, ChessPiece oldPiece){
-        boolean blocked = false;
-
-        if(within_bounds(myPosition)){
-            if(empty_space(newPiece)){
-                return true;
-            } else {
-                blocked = true;
-                if (enemy_piece(oldPiece, newPiece)){
-                    return true;
+        for (int x = -1; x<2; x++){
+            for (int y = -1; y<2; y++){
+                if (y==0 && x == 0){
+                    continue;
+                } else {
+                    possible_moves.addAll(move(board,myPosition,x,y,true));
                 }
             }
         }
-        return false;
+
+        return possible_moves;
     }
 
     private boolean within_bounds (ChessPosition myPosition){
@@ -124,15 +130,15 @@ public class ChessPiece {
         return true;
     }
 
-    private boolean empty_space(ChessPiece newPiece){
-        if (newPiece== null){
+    private boolean empty_space(ChessBoard board, ChessPosition newPosition){
+        if (board.getPiece(newPosition)== null){
             return true;
         }
         return false;
     }
 
-    private boolean enemy_piece(ChessPiece oldPiece, ChessPiece newPiece){
-        if(oldPiece.getTeamColor() == newPiece.getTeamColor()){
+    private boolean enemy_piece(ChessPiece oldPiece, ChessPiece enemyPiece){
+        if(oldPiece.getTeamColor() == enemyPiece.getTeamColor()){
             return false;
         }
         return true;
@@ -296,6 +302,37 @@ public class ChessPiece {
 
         return valid_move;
     }
+
+    ArrayList<Vector> vectors = new ArrayList<>();
+        for (int i = -1; i < 2; i++){
+            for (int j = -1; j < 2; j++){
+                vectors.add(new Vector(i,j));
+            }
+        }
+        vectors.remove(new Vector(0,0));
+
+        switch(piece.getPieceType()){
+            case KING:
+                limit_move = true;
+            case ROOK:
+                vectors.remove(new Vector(1,1));
+                break;
+            case BISHOP:
+                vectors.remove(new Vector(0,1));
+                vectors.remove(new Vector(1,0));
+                break;
+            case KNIGHT:
+                vectors.clear();
+                limit_move = true;
+                vectors.add(new Vector(1,2));
+                vectors.add(new Vector(2,1));
+                break;
+            case PAWN:
+                limit_move = true;
+                break;
+            default:
+                throw new RuntimeException("Not a valid piece");
+        }
 
      */
 }
