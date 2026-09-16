@@ -4,6 +4,7 @@ import javax.management.RuntimeErrorException;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -75,6 +76,7 @@ public class ChessPiece {
                 possible_moves.addAll(knight_move(board, myPosition));
                 break;
             case PAWN:
+                possible_moves.addAll(pawn_move(board, myPosition));
                 break;
             default:
                 throw new RuntimeException("Not a valid piece");
@@ -170,6 +172,35 @@ public class ChessPiece {
         return possible_moves;
     }
 
+    private ArrayList<ChessMove> pawn_move(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        possible_moves.addAll(move(board, myPosition, 0,1,true));
+
+        //attack moves
+        ChessPosition check_enemy_left = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1);
+        ChessPosition check_enemy_right = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1);
+
+        if(within_bounds(check_enemy_left) && board.getPiece(check_enemy_left)!= null){
+            if(enemy_piece(board.getPiece(myPosition),board.getPiece(check_enemy_left))){
+                possible_moves.addAll(move(board, myPosition, 1,-1,true));
+            }
+        }
+
+        if(within_bounds(check_enemy_right) && board.getPiece(check_enemy_right)!= null){
+            if(enemy_piece(board.getPiece(myPosition),board.getPiece(check_enemy_right))){
+                possible_moves.addAll(move(board, myPosition, 1,1,true));
+            }
+        }
+
+        return possible_moves;
+
+        // check for color (direction matters)
+        // check for attack (then diagonal)
+        // check for promotion (if at the end of the board, become a new creature in christ)
+        // first move is double move
+    }
+
     private boolean within_bounds (ChessPosition myPosition){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
@@ -193,7 +224,22 @@ public class ChessPiece {
         }
         return true;
     }
-/*
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
+
+    /*
     //sideways
     private void forwards(boolean valid_move, boolean blocked, ChessPosition myPosition, ChessBoard board, ChessPiece piece, ArrayList<ChessMove> possible_moves){
         int row = myPosition.getRow();
