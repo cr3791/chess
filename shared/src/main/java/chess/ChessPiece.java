@@ -174,31 +174,100 @@ public class ChessPiece {
 
     private ArrayList<ChessMove> pawn_move(ChessBoard board, ChessPosition myPosition){
         ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        ChessPiece piece = board.getPiece(myPosition);
 
-        possible_moves.addAll(move(board, myPosition, 0,1,true));
-
-        //attack moves
-        ChessPosition check_enemy_left = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()-1);
-        ChessPosition check_enemy_right = new ChessPosition(myPosition.getRow()+1, myPosition.getColumn()+1);
-
-        if(within_bounds(check_enemy_left) && board.getPiece(check_enemy_left)!= null){
-            if(enemy_piece(board.getPiece(myPosition),board.getPiece(check_enemy_left))){
-                possible_moves.addAll(move(board, myPosition, 1,-1,true));
-            }
+        possible_moves.addAll(starting_location_check(board, myPosition));
+        possible_moves.addAll(promotion_location_check(board, myPosition));
+        switch (pieceColor){
+            case BLACK:
+                possible_moves.addAll(attack(board, myPosition, -1));
+                break;
+            case WHITE:
+                possible_moves.addAll(attack(board, myPosition, 1));
+                break;
         }
+        return possible_moves;
 
-        if(within_bounds(check_enemy_right) && board.getPiece(check_enemy_right)!= null){
-            if(enemy_piece(board.getPiece(myPosition),board.getPiece(check_enemy_right))){
-                possible_moves.addAll(move(board, myPosition, 1,1,true));
+        // check for color (direction matters) done
+        // check for attack (then diagonal)
+        // check for promotion (if at the end of the board, become a new creature in christ) done
+        // first move is double move done
+    }
+    private ArrayList<ChessMove> attack(ChessBoard board, ChessPosition myPosition, int move){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        for (int i = 0; i < 2; i++){
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow()+move, myPosition.getColumn()+move);
+            if(within_bounds(newPosition) && !(empty_space(board, newPosition))){
+                if(enemy_piece(board.getPiece(myPosition), board.getPiece(newPosition))){
+                    possible_moves.add(new ChessMove(myPosition,newPosition,null));
+                }
             }
+            move *= -1;
         }
 
         return possible_moves;
 
-        // check for color (direction matters)
-        // check for attack (then diagonal)
-        // check for promotion (if at the end of the board, become a new creature in christ)
-        // first move is double move
+    }
+
+    private ArrayList<ChessMove> promotion_location_check(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        switch (pieceColor){
+            case BLACK:
+                if (myPosition.getRow() == 2){
+                    possible_moves.addAll(promotion(board, myPosition, -1));
+                }
+                break;
+            case WHITE:
+                if (myPosition.getRow() == 7){
+                    possible_moves.addAll(promotion(board, myPosition, 1));
+                }
+                break;
+        }
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> promotion (ChessBoard board, ChessPosition myPosition, int move){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        ChessPosition newPosition = new ChessPosition(myPosition.getRow()+move, myPosition.getColumn());
+        if(empty_space(board, newPosition)){
+            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.KNIGHT));
+            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.QUEEN));
+            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.ROOK));
+            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.BISHOP));
+        }
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> starting_location_check(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        switch (pieceColor){
+            case BLACK:
+                if (myPosition.getRow() == 8){
+                    possible_moves.addAll(starting_location_move(board, myPosition, -1));
+                }
+                break;
+            case WHITE:
+                if (myPosition.getRow() == 1){
+                    possible_moves.addAll(starting_location_move(board, myPosition, 1));
+                }
+                break;
+        }
+
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> starting_location_move(ChessBoard board, ChessPosition myPosition, int multiplier){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        for (int i = 1; i < 2; i++){
+            ChessPosition newPosition = new ChessPosition(myPosition.getRow()+(i*multiplier), myPosition.getColumn());
+            if(empty_space(board, newPosition)){
+                possible_moves.add(new ChessMove(myPosition,newPosition,null));
+            }
+        }
+
+        return possible_moves;
     }
 
     private boolean within_bounds (ChessPosition myPosition){
