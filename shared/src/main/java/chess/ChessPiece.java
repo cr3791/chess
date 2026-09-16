@@ -62,12 +62,17 @@ public class ChessPiece {
                 possible_moves.addAll(king_move(board, myPosition));
                 break;
             case QUEEN:
+                possible_moves.addAll(bishop_move(board, myPosition));
+                possible_moves.addAll(rook_move(board, myPosition));
                 break;
             case ROOK:
+                possible_moves.addAll(rook_move(board, myPosition));
                 break;
             case BISHOP:
+                possible_moves.addAll(bishop_move(board, myPosition));
                 break;
             case KNIGHT:
+                possible_moves.addAll(knight_move(board, myPosition));
                 break;
             case PAWN:
                 break;
@@ -80,7 +85,6 @@ public class ChessPiece {
 
     private ArrayList<ChessMove> move(ChessBoard board, ChessPosition myPosition, int x, int y, boolean limiter){
         boolean end = limiter;
-        int multiplier = 2;
         ArrayList<ChessMove> possible_moves = new ArrayList<>();
         do{
             ChessPosition newPosition = new ChessPosition(myPosition.getRow()+x, myPosition.getColumn()+y);
@@ -96,12 +100,21 @@ public class ChessPiece {
             } else {
                 end = true;
             }
-            x *= multiplier;
-            y *= multiplier;
-            multiplier+=1;
+            x = iterate(x);
+            y = iterate(y);
         } while (!end);
-
         return possible_moves;
+    }
+
+    private int iterate(int num){
+        if (num == 0){
+            return 0;
+        } else if (num<0) {
+            num-=1;
+        } else {
+            num+=1;
+        }
+        return num;
     }
 
     private ArrayList<ChessMove> king_move(ChessBoard board, ChessPosition myPosition){
@@ -116,6 +129,43 @@ public class ChessPiece {
                 }
             }
         }
+
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> rook_move(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        possible_moves.addAll(move(board, myPosition, 1,0,false));
+        possible_moves.addAll(move(board, myPosition, -1,0,false));
+        possible_moves.addAll(move(board, myPosition, 0,-1,false));
+        possible_moves.addAll(move(board, myPosition, 0,1,false));
+
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> bishop_move(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        possible_moves.addAll(move(board, myPosition, 1,1,false));
+        possible_moves.addAll(move(board, myPosition, -1,1,false));
+        possible_moves.addAll(move(board, myPosition, 1,-1,false));
+        possible_moves.addAll(move(board, myPosition, -1,-1,false));
+
+        return possible_moves;
+    }
+
+    private ArrayList<ChessMove> knight_move(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+
+        possible_moves.addAll(move(board, myPosition, 1,2,true));
+        possible_moves.addAll(move(board, myPosition, -1,2,true));
+        possible_moves.addAll(move(board, myPosition, 1,-2,true));
+        possible_moves.addAll(move(board, myPosition, -1,-2,true));
+        possible_moves.addAll(move(board, myPosition, 2,1,true));
+        possible_moves.addAll(move(board, myPosition, 2,-1,true));
+        possible_moves.addAll(move(board, myPosition, -2,1,true));
+        possible_moves.addAll(move(board, myPosition, -2,-1,true));
 
         return possible_moves;
     }
