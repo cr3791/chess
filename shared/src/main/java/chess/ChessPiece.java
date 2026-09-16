@@ -55,9 +55,47 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
+        record Vector(int x, int y){};
+        boolean limit_move = false;
+
+        ArrayList<Vector> vectors = new ArrayList<>();
+        for (int i = -1; i < 2; i++){
+            for (int j = -1; j < 2; j++){
+                vectors.add(new Vector(i,j));
+            }
+        }
+        vectors.remove(new Vector(0,0));
+
+        switch(piece.getPieceType()){
+            case KING:
+                limit_move = true;
+            case ROOK:
+                vectors.remove(new Vector(1,1));
+                break;
+            case BISHOP:
+                vectors.remove(new Vector(0,1));
+                vectors.remove(new Vector(1,0));
+                break;
+            case KNIGHT:
+                vectors.clear();
+                limit_move = true;
+                vectors.add(new Vector(1,2));
+                vectors.add(new Vector(2,1));
+                break;
+            case PAWN:
+                limit_move = true;
+                break;
+            default:
+                throw new RuntimeException("Not a valid piece");
+        }
+
         ArrayList<ChessMove> possible_moves = new ArrayList<>();
 
         return possible_moves;
+    }
+
+    private ArrayList<Vector> moves(){
+
     }
 
     private boolean blocked(ChessPosition myPosition, ChessPiece newPiece, ChessPiece oldPiece){
