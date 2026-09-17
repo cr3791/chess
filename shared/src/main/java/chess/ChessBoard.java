@@ -41,7 +41,43 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        // add in default game configuration
+        ChessPiece[][] blank_board = blank_board();
+        for (int i = 0; i<8; i++){
+            for (int j = 0; j<8; j++){
+                playing_board[i][j] = blank_board[i][j];
+            }
+        }
+    }
+
+    private ChessPiece[][] blank_board(){
+        ChessPiece[][] board = new ChessPiece[8][8];
+
+        for (int i =0; i<8; i++){
+            board[1][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            board[6][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+
+        }
+
+        for (int i = 0; i<8; i++){
+            if(i==0 || i== 7){
+                board[0][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
+                board[7][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+            } else if (i == 1 || i == 6){
+                board[0][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);
+                board[7][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
+            } else if (i == 2 || i == 5){
+                board[0][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP);
+                board[7][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
+            } else if (i == 3){
+                board[0][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+                board[7][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+            } else if (i == 4){
+                board[0][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+                board[7][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+            }
+        }
+
+        return board;
     }
 
     @Override
