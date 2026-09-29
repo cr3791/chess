@@ -11,10 +11,11 @@ import java.util.Collection;
  */
 public class ChessGame {
 
-    private ChessBoard playing_board;
+    private final ChessBoard playing_board = new ChessBoard();
     private TeamColor current_team;
     public ChessGame() {
-
+        playing_board.resetBoard();
+        current_team = TeamColor.WHITE;
     }
 
     /**
@@ -53,6 +54,10 @@ public class ChessGame {
 
         Collection<ChessMove> possible_moves = piece.pieceMoves(playing_board,startPosition);
 
+        if(piece.getPieceType() == ChessPiece.PieceType.KING){
+            // add king conditions -- can't move into a spot that is currently under attack
+        }
+
         return possible_moves;
     }
 
@@ -63,7 +68,12 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessPosition startPosition = move.getStartPosition();
+        Collection<ChessMove> possible_moves = validMoves(startPosition);
+
+        if(possible_moves.contains(move)){
+
+        }
     }
 
     /**
@@ -104,8 +114,14 @@ public class ChessGame {
      */
 
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
-        current_team = TeamColor.WHITE;
+        for(int i = 1; i<=8; i++){
+            for(int j = 1; j<=8; j++){
+                ChessPosition position = new ChessPosition(i,j);
+                ChessPiece piece = board.getPiece(position);
+
+                playing_board.addPiece(position, piece);
+            }
+        }
     }
 
     /**
