@@ -63,19 +63,17 @@ public class ChessGame {
 
     public Collection<ChessMove> kingAttack(Collection<ChessMove> king_moves, ChessPosition kingPosition){
         TeamColor king_color = playing_board.getPiece(kingPosition).pieceColor;
-        Collection<ChessMove> possible_moves = new ArrayList<ChessMove>() {};
+        Collection<ChessMove> possible_moves = new ArrayList<ChessMove>();
 
         for(int i = 1; i<=8; i++){
             for(int j = 1; j<=8; j++){
                 ChessPosition position = new ChessPosition(i,j);
                 ChessPiece piece = playing_board.getPiece(position);
 
-                if(piece.getTeamColor()!=king_color){
+                if(piece!=null && piece.getTeamColor()!=king_color){
                     possible_moves = piece.pieceMoves(playing_board,position);
                     for (ChessMove move : possible_moves){
-                        if (king_moves.contains(move)){
-                            king_moves.remove(move);
-                        }
+                        king_moves.remove(move);
                     }
                 }
             }
