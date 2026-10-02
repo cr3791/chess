@@ -14,8 +14,6 @@ public class ChessGame {
     private final ChessBoard playing_board = new ChessBoard();
     private TeamColor current_team;
     public ChessGame() {
-        playing_board.resetBoard();
-        current_team = TeamColor.WHITE;
     }
 
     /**
@@ -52,35 +50,16 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = playing_board.getPiece(startPosition);
 
-        Collection<ChessMove> possible_moves = piece.pieceMoves(playing_board,startPosition);
-
-        if(piece.getPieceType() == ChessPiece.PieceType.KING){
-            possible_moves = kingAttack(possible_moves,startPosition);
+        if (piece == null){
+            return null;
         }
+
+        Collection<ChessMove> possible_moves = piece.pieceMoves(playing_board,startPosition);
 
         return possible_moves;
     }
 
-    public Collection<ChessMove> kingAttack(Collection<ChessMove> king_moves, ChessPosition kingPosition){
-        TeamColor king_color = playing_board.getPiece(kingPosition).pieceColor;
-        Collection<ChessMove> possible_moves = new ArrayList<ChessMove>();
 
-        for(int i = 1; i<=8; i++){
-            for(int j = 1; j<=8; j++){
-                ChessPosition position = new ChessPosition(i,j);
-                ChessPiece piece = playing_board.getPiece(position);
-
-                if(piece!=null && piece.getTeamColor()!=king_color){
-                    possible_moves = piece.pieceMoves(playing_board,position);
-                    for (ChessMove move : possible_moves){
-                        king_moves.remove(move);
-                    }
-                }
-            }
-        }
-
-        return king_moves;
-    }
 
     /**
      * Makes a move in the chess game
@@ -89,12 +68,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessPosition startPosition = move.getStartPosition();
-        Collection<ChessMove> possible_moves = validMoves(startPosition);
 
-        if(possible_moves.contains(move)){
-
-        }
     }
 
     /**
@@ -114,7 +88,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return false;
     }
 
     /**
@@ -125,7 +99,27 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = findKing(teamColor);
+
+        if(kingPosition!=null && !isInCheck(teamColor) && validMoves(kingPosition).isEmpty()){
+            return true;
+        }
+
+        return false;
+    }
+
+    private ChessPosition findKing(TeamColor teamColor){
+        for(int i = 1; i<=8; i++){
+            for(int j = 1; j<=8; j++){
+                ChessPosition position = new ChessPosition(i,j);
+                ChessPiece piece = playing_board.getPiece(position);
+
+                if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor){
+                    return position;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -153,4 +147,41 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return playing_board;
     }
+
+
+
+    /*
+    ChessPosition startPosition = move.getStartPosition();
+        Collection<ChessMove> possible_moves = validMoves(startPosition);
+        ChessPiece piece = playing_board[startPosition.getRow()-1][startPosition.getColumn()-1];
+
+        if(possible_moves.contains(move)){
+            playing_board[startPosition.getRow()-1][startPosition.getColumn()-1] = null;
+        }
+
+        public Collection<ChessMove> kingAttack(Collection<ChessMove> king_moves, ChessPosition kingPosition){
+        TeamColor king_color = playing_board.getPiece(kingPosition).pieceColor;
+        Collection<ChessMove> possible_moves = new ArrayList<ChessMove>();
+
+        for(int i = 1; i<=8; i++){
+            for(int j = 1; j<=8; j++){
+                ChessPosition position = new ChessPosition(i,j);
+                ChessPiece piece = playing_board.getPiece(position);
+
+                if(piece!=null && piece.getTeamColor()!=king_color){
+                    possible_moves = piece.pieceMoves(playing_board,position);
+                    for (ChessMove move : possible_moves){
+                        king_moves.remove(move);
+                    }
+                }
+            }
+        }
+
+        return king_moves;
+    }
+
+
+
+
+     */
 }
