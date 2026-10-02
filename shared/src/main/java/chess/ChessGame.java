@@ -56,6 +56,8 @@ public class ChessGame {
 
         Collection<ChessMove> possible_moves = piece.pieceMoves(playing_board,startPosition);
 
+
+
         return possible_moves;
     }
 
@@ -68,7 +70,17 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-
+        if(validMoves(move.getStartPosition()).contains(move)){
+            ChessPiece piece = playing_board.getPiece(move.getStartPosition());
+            playing_board.addPiece(move.getStartPosition(), null);
+            if(move.getPromotionPiece()!=null){
+                playing_board.addPiece(move.getEndPosition(),new ChessPiece(piece.getTeamColor(),move.getPromotionPiece()));
+            } else {
+                playing_board.addPiece(move.getEndPosition(), piece);
+            }
+        } else {
+            throw new InvalidMoveException("Invalid Move");
+        }
     }
 
     /**
