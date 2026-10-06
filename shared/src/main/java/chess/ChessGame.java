@@ -79,7 +79,7 @@ public class ChessGame {
         }
 
 
-        if(check_Check(temp_board, current_team)){
+        if(check_Check(temp_board, piece.getTeamColor())){
             return false;
         } else {
             return true;
