@@ -17,9 +17,12 @@ public class ChessPiece {
     ChessGame.TeamColor pieceColor;
     ChessPiece.PieceType type;
 
+    private boolean has_moved;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+        has_moved = false;
     }
 
     /**
@@ -315,6 +318,14 @@ public class ChessPiece {
             return false;
         }
         return true;
+    }
+
+    public void setHas_moved(boolean set){
+        has_moved = set;
+    }
+
+    public boolean get_has_moved(){
+        return has_moved;
     }
 
     @Override
