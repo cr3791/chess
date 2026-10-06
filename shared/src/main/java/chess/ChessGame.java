@@ -167,24 +167,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
-        for(int row = 1; row<=8; row++){
-            for(int col = 1; col<=8; col++){
-                ChessPosition position = new ChessPosition(row, col);
-                ChessPiece piece = playing_board.getPiece(position);
-
-                if (piece != null && piece.getTeamColor().equals(teamColor)){
-                    Collection<ChessMove> possible_moves = validMoves(position);
-
-                    if (!possible_moves.isEmpty()){
-                        return false;
-                    }
-                }
-
-            }
-        }
-
-        return true;
+        return !can_Move(teamColor) && isInCheck(teamColor);
     }
 
     /**
@@ -194,14 +177,28 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
-    public boolean isInStalemate(TeamColor teamColor) {
-        ChessPosition kingPosition = findKing(playing_board, teamColor);
 
-        if (kingPosition!=null && !isInCheck(teamColor) && validMoves(kingPosition).isEmpty()){
-            return true;
+    private boolean can_Move(TeamColor teamColor){
+        for(int row = 1; row<=8; row++){
+            for(int col = 1; col<=8; col++){
+                ChessPosition position = new ChessPosition(row, col);
+                ChessPiece piece = playing_board.getPiece(position);
+
+                if (piece != null && piece.getTeamColor().equals(teamColor)){
+                    Collection<ChessMove> possible_moves = validMoves(position);
+
+                    if (!possible_moves.isEmpty()){
+                        return true;
+                    }
+                }
+
+            }
         }
-
         return false;
+    }
+
+    public boolean isInStalemate(TeamColor teamColor) {
+        return !can_Move(teamColor) && !isInCheck(teamColor);
     }
 
     private ChessPosition findKing(ChessBoard temp_board, TeamColor teamColor){
