@@ -13,7 +13,15 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"));
 
         // Register your endpoints and exception handlers here.
+        /*
         .clear("/db", this::clearData);
+        .register("/user", this::??);
+        .login("/session", this::??);
+        .logout("/session", this::??);
+        .listgames("/game", this::??);
+        .creategame("/game", this::??);
+        .joingame("/game", this::??);
+         */
     }
 
     public int run(int desiredPort) {
