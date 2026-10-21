@@ -15,12 +15,12 @@ public class Server {
         // Register your endpoints and exception handlers here.
         /*
         .clear("/db", this::clearData);
-        .register("/user", this::??);
-        .login("/session", this::??);
-        .logout("/session", this::??);
-        .listgames("/game", this::??);
-        .creategame("/game", this::??);
-        .joingame("/game", this::??);
+        .register("/user", this::registerUser);
+        .login("/session", this::logIn);
+        .logout("/session", this::logOut);
+        .listgames("/game", this::listGames);
+        .creategame("/game", this::createGame);
+        .joingame("/game", this::joinGame);
          */
     }
 
@@ -33,7 +33,33 @@ public class Server {
         javalin.stop();
     }
 
+    /*
     private void clearData(Context ctx){
         throw new NotImplementedException;
     }
+
+    private void registerUser(Context ctx){
+        throw new NotImplementedException;
+    }
+
+    private void logIn(Context ctx){
+        throw new NotImplementedException;
+    }
+
+    private void logOut(Context ctx){
+        throw new NotImplementedException;
+    }
+
+    private void listGames(Context ctx){
+        throw new NotImplementedException;
+    }
+
+    private void createGame(Context ctx){
+        throw new NotImplementedException;
+    }
+
+    private void registerUser(Context ctx){
+        throw new NotImplementedException;
+    }
+     */
 }
