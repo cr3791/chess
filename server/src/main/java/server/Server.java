@@ -10,21 +10,24 @@ public class Server {
     private final ChessService service;
     private final Javalin javalin;
 
+    public Server(){
+        this(new ChessService(new MemoryUserDataAccess(), new MemoryGameDataAccess(), new MemoryAuthDataAccess()));
+    }
+
     public Server(ChessService service) {
         this.service = service;
+
+        // Register your endpoints and exception handlers here.
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .delete("/db", this::clearData)
                 .post("/user", this::registerUser);
-        // Register your endpoints and exception handlers here.
-
-        /*
-        .register("/user", this::registerUser);
-        .login("/session", this::logIn);
-        .logout("/session", this::logOut);
-        .listgames("/game", this::listGames);
-        .creategame("/game", this::createGame);
-        .joingame("/game", this::joinGame);
-         */
+                /*
+                .post("/session", this::logIn)
+                .delete("/session", this::logOut)
+                .get("/game", this::listGames)
+                .post("/game", this::createGame)
+                .put("/game", this::joinGame)
+                .exception(DataAccessException.class, this::exceptionHandler) */
     }
 
     public int run(int desiredPort) {
@@ -36,33 +39,35 @@ public class Server {
         javalin.stop();
     }
 
+    public void exceptionHandler(DataAccessException ex, Context ctx){
+
+    }
 
     private void clearData(Context ctx){
-
+        service.clearData();
     }
 
     private void registerUser(Context ctx){
 
     }
-    /*
+
     private void logIn(Context ctx){
-        throw new NotImplementedException;
+
     }
 
     private void logOut(Context ctx){
-        throw new NotImplementedException;
+
     }
 
     private void listGames(Context ctx){
-        throw new NotImplementedException;
+
     }
 
     private void createGame(Context ctx){
-        throw new NotImplementedException;
+
     }
 
-    private void registerUser(Context ctx){
-        throw new NotImplementedException;
+    private void joinGame(Context ctx){
+
     }
-     */
 }
