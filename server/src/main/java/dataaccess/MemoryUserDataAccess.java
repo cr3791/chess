@@ -12,21 +12,16 @@ public class MemoryUserDataAccess implements UserDataAccess{
     }
 
     @Override
-    public UserData addUser(UserData userData) {
-        try{
-            checkUsernameTaken(userData.username());
-            userDataList.add(userData);
-            return userData;
-        } catch (AlreadyTakenException ex){
-            throw new AlreadyTakenException("Username already taken");
-        }
+    public void addUser(UserData userData) {
+        userDataList.add(userData);
     }
 
-    private void checkUsernameTaken(String username){
+    public UserData getUser(UserData userData){
         for (UserData user : userDataList){
-            if (user.username().equals(username)){
-                throw new AlreadyTakenException("Username already taken");
+            if (user.username().equals(userData.username())){
+                return user;
             }
         }
+        return null;
     }
 }

@@ -19,10 +19,13 @@ public class ChessService {
         authDataAccess.clearAuthData();
     }
 
-    public AuthData registerUser(UserData userData){
-        userData = userDataAccess.addUser(userData);
-        AuthData authData = authDataAccess.addAuthData(userData.username());
-        return authData;
+    public AuthData registerUser(UserData userData) throws AlreadyTakenException {
+        if (userDataAccess.getUser(userData) == null){
+            userDataAccess.addUser(userData);
+            return authDataAccess.addAuthData(userData.username());
+        } else {
+            throw new AlreadyTakenException("This username is already taken");
+        }
     }
 
 }

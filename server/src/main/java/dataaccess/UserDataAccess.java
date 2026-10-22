@@ -3,5 +3,6 @@ import model.UserData;
 
 public interface UserDataAccess {
     void clearUserData();
-    UserData addUser(UserData userData);
+    UserData getUser(UserData userData);
+    void addUser(UserData userData);
 }

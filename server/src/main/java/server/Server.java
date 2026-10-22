@@ -48,7 +48,7 @@ public class Server {
         service.clearData();
     }
 
-    private void registerUser(Context ctx){
+    private void registerUser(Context ctx) throws AlreadyTakenException{
         UserData userData = new Gson().fromJson(ctx.body(), UserData.class);
         AuthData authData = service.registerUser(userData);
         ctx.result(new Gson().toJson(authData));
