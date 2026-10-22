@@ -1,14 +1,15 @@
 package service;
-import dataaccess.UserDataAccess;
+import dataaccess.*;
 import model.*;
 
 public class ChessService {
     private final UserDataAccess userDataAccess;
-    public ChessService(UserDataAccess userDataAccess){
+    private final GameDataAccess gameDataAccess;
+    private final AuthDataAccess authDataAccess;
+    public ChessService(UserDataAccess userDataAccess, GameDataAccess gameDataAccess, AuthDataAccess authDataAccess){
         this.userDataAccess = userDataAccess;
+        this.gameDataAccess = gameDataAccess;
+        this.authDataAccess = authDataAccess;
     }
 
-    public UserData getUser(UserData userData){
-        return userDataAccess.getUser(userData);
-    }
 }

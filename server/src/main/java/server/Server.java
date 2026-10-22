@@ -12,11 +12,12 @@ public class Server {
 
     public Server(ChessService service) {
         this.service = service;
-        javalin = Javalin.create(config -> config.staticFiles.add("web"));
-
+        javalin = Javalin.create(config -> config.staticFiles.add("web"))
+                .delete("/db", this::clearData)
+                .post("/user", this::registerUser);
         // Register your endpoints and exception handlers here.
+
         /*
-        .clear("/db", this::clearData);
         .register("/user", this::registerUser);
         .login("/session", this::logIn);
         .logout("/session", this::logOut);
@@ -39,11 +40,11 @@ public class Server {
     private void clearData(Context ctx){
 
     }
-    /*
-    private void registerUser(Context ctx){
-        throw new NotImplementedException;
-    }
 
+    private void registerUser(Context ctx){
+
+    }
+    /*
     private void logIn(Context ctx){
         throw new NotImplementedException;
     }
