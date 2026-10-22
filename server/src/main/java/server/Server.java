@@ -40,10 +40,6 @@ public class Server {
         javalin.stop();
     }
 
-    public void exceptionHandler(DataAccessException ex, Context ctx){
-
-    }
-
     private void clearData(Context ctx){
         service.clearData();
     }

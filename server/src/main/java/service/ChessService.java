@@ -28,4 +28,15 @@ public class ChessService {
         }
     }
 
+    public AuthDataAccess getAuthDataAccess() {
+        return authDataAccess;
+    }
+
+    public GameDataAccess getGameDataAccess() {
+        return gameDataAccess;
+    }
+
+    public UserDataAccess getUserDataAccess() {
+        return userDataAccess;
+    }
 }

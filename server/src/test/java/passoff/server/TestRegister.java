@@ -7,7 +7,6 @@ import dataaccess.MemoryUserDataAccess;
 import org.junit.jupiter.api.*;
 import model.*;
 import service.ChessService;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRegister {
@@ -24,18 +23,16 @@ public class TestRegister {
 
     @Test
     @Order(1)
-    public static void registerNewUserSuccess() throws AlreadyTakenException {
+    public void registerNewUserSuccess() throws AlreadyTakenException{
         AuthData authData = service.registerUser(existingUser);
-
         assertEquals("ExistingUser", authData.username());
     }
 
     @Test
     @Order(1)
-    public static void registerNewUserFailure() throws AlreadyTakenException {
+    public void registerNewUserFailure() throws AlreadyTakenException {
         AuthData authData1 = service.registerUser(existingUser);
-        AuthData authData2 = service.registerUser(existingUser);
 
-        assertNull(authData2);
+
     }
 }

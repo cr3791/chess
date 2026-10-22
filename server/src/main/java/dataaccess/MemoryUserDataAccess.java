@@ -16,6 +16,7 @@ public class MemoryUserDataAccess implements UserDataAccess{
         userDataList.add(userData);
     }
 
+    @Override
     public UserData getUser(UserData userData){
         for (UserData user : userDataList){
             if (user.username().equals(userData.username())){
@@ -23,5 +24,10 @@ public class MemoryUserDataAccess implements UserDataAccess{
             }
         }
         return null;
+    }
+
+    @Override
+    public ArrayList<UserData> getUserDataList(){
+        return userDataList;
     }
 }

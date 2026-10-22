@@ -14,7 +14,7 @@ public class MemoryAuthDataAccess implements AuthDataAccess{
     @Override
     public AuthData addAuthData(String username) {
         String authToken = createToken();
-        AuthData authData = new AuthData(username, authToken);
+        AuthData authData = new AuthData(authToken, username);
         authDataList.add(authData);
         return authData;
     }
