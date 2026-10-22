@@ -14,9 +14,15 @@ public class ChessService {
     }
 
     public void clearData(){
-        userDataAccess.clear();
+        userDataAccess.clearUserData();
         gameDataAccess.clearGameData();
-        authDataAccess.clear();
+        authDataAccess.clearAuthData();
+    }
+
+    public AuthData registerUser(UserData userData){
+        userData = userDataAccess.addUser(userData);
+        AuthData authData = authDataAccess.addAuthData(userData.username());
+        return authData;
     }
 
 }
