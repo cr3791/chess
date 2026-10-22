@@ -37,6 +37,14 @@ public class ChessService {
         return null;
     }
 
+    public void logOut(String authToken){
+        AuthData authData = authDataAccess.getAuthData(authToken);
+
+        if(authData!=null){
+            authDataAccess.removeAuthData(authData);
+        }
+    }
+
     public AuthDataAccess getAuthDataAccess() {
         return authDataAccess;
     }

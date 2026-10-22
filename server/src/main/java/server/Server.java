@@ -22,10 +22,9 @@ public class Server {
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .delete("/db", this::clearData)
                 .post("/user", this::registerUser)
-                .post("/session", this::logIn);
-                /*
                 .post("/session", this::logIn)
-                .delete("/session", this::logOut)
+                .delete("/session", this::logOut);
+                /*
                 .get("/game", this::listGames)
                 .post("/game", this::createGame)
                 .put("/game", this::joinGame)
@@ -58,7 +57,8 @@ public class Server {
     }
 
     private void logOut(Context ctx){
-
+        String authToken = new Gson().fromJson(ctx.body(), String.class);
+        service.logOut(authToken);
     }
 
     private void listGames(Context ctx){

@@ -19,6 +19,21 @@ public class MemoryAuthDataAccess implements AuthDataAccess{
         return authData;
     }
 
+    @Override
+    public AuthData getAuthData(String authToken){
+        for(AuthData authData : authDataList){
+            if (authData.authToken().equals(authToken)){
+                return authData;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeAuthData(AuthData authData) {
+        authDataList.remove(authData);
+    }
+
     private String createToken(){
         return UUID.randomUUID().toString();
     }
