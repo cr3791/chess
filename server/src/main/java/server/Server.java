@@ -21,7 +21,8 @@ public class Server {
         // Register your endpoints and exception handlers here.
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .delete("/db", this::clearData)
-                .post("/user", this::registerUser);
+                .post("/user", this::registerUser)
+                .post("/session", this::logIn);
                 /*
                 .post("/session", this::logIn)
                 .delete("/session", this::logOut)
@@ -51,7 +52,9 @@ public class Server {
     }
 
     private void logIn(Context ctx){
-
+        UserData userData = new Gson().fromJson(ctx.body(), UserData.class);
+        AuthData authData = service.logIn(userData);
+        ctx.result(new Gson().toJson(authData));
     }
 
     private void logOut(Context ctx){

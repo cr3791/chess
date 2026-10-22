@@ -28,6 +28,15 @@ public class ChessService {
         }
     }
 
+    public AuthData logIn(UserData userData){
+        UserData storedUser = userDataAccess.getUser(userData);
+
+        if(storedUser!=null && storedUser.password().equals(userData.password())){
+            return authDataAccess.addAuthData(userData.username());
+        }
+        return null;
+    }
+
     public AuthDataAccess getAuthDataAccess() {
         return authDataAccess;
     }
