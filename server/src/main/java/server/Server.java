@@ -27,12 +27,9 @@ public class Server {
                 .post("/user", this::registerUser)
                 .post("/session", this::logIn)
                 .delete("/session", this::logOut)
-                //add list games on this line
-                .post("/game", this::createGame);
-        /*
                 .get("/game", this::listGames)
-                .put("/game", this::joinGame)
-                .exception(DataAccessException.class, this::exceptionHandler) */
+                .post("/game", this::createGame)
+                .put("/game", this::joinGame);
     }
 
     public int run(int desiredPort) {
@@ -87,14 +84,28 @@ public class Server {
         try {
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
             ArrayList<GameData> games = service.listGames(authToken);
+            ctx.result(new Gson().toJson(games));
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
             ctx.result(new Gson().toJson("Error: unauthorized user"));
         }
     }
 
-    private void createGame(Context ctx){
+    private int createGame(Context ctx){
+        try{
+            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            String gameName = new Gson().fromJson(ctx.body(), String.class);
 
+            int gameID = service.createGame(authToken,gameName);
+            ctx.result(new Gson().toJson(gameID));
+
+        } catch (BadRequestException ex){
+            ctx.status(400);
+            ctx.result(new Gson().toJson("Error: bad request"));
+        } catch (UnauthorizedUserException ex){
+            ctx.status(401);
+            ctx.result(new Gson().toJson("Error: unauthorized user"));
+        }
     }
 
     private void joinGame(Context ctx){

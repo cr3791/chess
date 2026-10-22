@@ -66,6 +66,16 @@ public class ChessService {
         }
     }
 
+    public int createGame(String authToken, String gameName) throws BadRequestException, UnauthorizedUserException{
+        AuthData authData = authDataAccess.getAuthData(authToken);
+
+        if(authData!=null){
+            return gameDataAccess.createGame(gameName);
+        } else {
+            throw new UnauthorizedUserException("");
+        }
+    }
+
     private boolean checkPassword(String storedPassword, String passwordAttempt) throws UnauthorizedUserException {
         if(storedPassword.equals(passwordAttempt)){
             return true;

@@ -4,6 +4,6 @@ import java.util.ArrayList;
 
 public interface GameDataAccess {
     void clearGameData();
-    void registerGame();
+    int createGame(String gameName);
     ArrayList<GameData> getGameList();
 }
