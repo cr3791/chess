@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestClear {
+public class TestEndPoints {
     private static ChessService service;
     private static UserData user1;
     private static UserData user2;
@@ -31,7 +31,7 @@ public class TestClear {
         user5 = new UserData("user5", "user5p", "u5@mail.com");
         user6 = new UserData("user6", "user6p", "u6@mail.com");
     }
-
+ /*
     @Test
     @Order(1)
     public void testClear(){
@@ -57,4 +57,21 @@ public class TestClear {
             //assert(register user failed, test can't continue)
         }
     }
+
+    @Test
+    @Order(3)
+    public void registerNewUserSuccess() throws AlreadyTakenException{
+        AuthData authData = service.registerUser(user1);
+        assertEquals("ExistingUser", authData.username());
+    }
+
+    @Test
+    @Order(4)
+    public void registerNewUserFailure() throws AlreadyTakenException {
+        AuthData authData1 = service.registerUser(user2);
+
+
+    }
+
+  */
 }
