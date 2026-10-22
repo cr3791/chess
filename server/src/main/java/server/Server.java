@@ -1,7 +1,9 @@
 package server;
 
-import dataaccess.NotImplementedException;
+import com.google.gson.Gson;
+import dataaccess.*;
 import io.javalin.*;
+import io.javalin.http.Context;
 import service.ChessService;
 
 public class Server {
@@ -33,11 +35,11 @@ public class Server {
         javalin.stop();
     }
 
-    /*
-    private void clearData(Context ctx){
-        throw new NotImplementedException;
-    }
 
+    private void clearData(Context ctx){
+
+    }
+    /*
     private void registerUser(Context ctx){
         throw new NotImplementedException;
     }
