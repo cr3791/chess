@@ -4,16 +4,20 @@ import model.GameData;
 import java.util.ArrayList;
 
 public class MemoryGameDataAccess implements GameDataAccess{
-    private final ArrayList<GameData> gameData = new ArrayList<>();
-
+    private final ArrayList<GameData> gameDataList = new ArrayList<>();
 
     @Override
     public void clearGameData() {
-        gameData.clear();
+        gameDataList.clear();
     }
 
     @Override
     public void registerGame() {
 
+    }
+
+    @Override
+    public ArrayList<GameData> getGameList() {
+        return gameDataList;
     }
 }

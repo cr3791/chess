@@ -1,11 +1,14 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
 import io.javalin.*;
 import io.javalin.http.Context;
 import service.ChessService;
+
+import java.util.ArrayList;
 
 public class Server {
     private final ChessService service;
@@ -71,12 +74,23 @@ public class Server {
     }
 
     private void logOut(Context ctx){
-        String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
-        service.logOut(authToken);
+        try {
+            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            service.logOut(authToken);
+        } catch (UnauthorizedUserException ex){
+            ctx.status(401);
+            ctx.result(new Gson().toJson("Error: unauthorized user"));
+        }
     }
 
     private void listGames(Context ctx){
-
+        try {
+            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            ArrayList<GameData> games = service.listGames(authToken);
+        } catch (UnauthorizedUserException ex){
+            ctx.status(401);
+            ctx.result(new Gson().toJson("Error: unauthorized user"));
+        }
     }
 
     private void createGame(Context ctx){

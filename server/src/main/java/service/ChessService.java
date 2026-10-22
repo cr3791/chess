@@ -2,6 +2,8 @@ package service;
 import dataaccess.*;
 import model.*;
 
+import java.util.ArrayList;
+
 public class ChessService {
     private final UserDataAccess userDataAccess;
     private final GameDataAccess gameDataAccess;
@@ -44,11 +46,23 @@ public class ChessService {
         }
     }
 
-    public void logOut(String authToken){
+    public void logOut(String authToken) throws UnauthorizedUserException{
         AuthData authData = authDataAccess.getAuthData(authToken);
 
         if(authData!=null){
             authDataAccess.removeAuthData(authData);
+        } else {
+            throw new UnauthorizedUserException("");
+        }
+    }
+
+    public ArrayList<GameData> listGames(String authToken) throws UnauthorizedUserException{
+        AuthData authData = authDataAccess.getAuthData(authToken);
+
+        if(authData!=null){
+            return gameDataAccess.getGameList();
+        } else {
+            throw new UnauthorizedUserException("");
         }
     }
 
