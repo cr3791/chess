@@ -23,10 +23,11 @@ public class Server {
                 .delete("/db", this::clearData)
                 .post("/user", this::registerUser)
                 .post("/session", this::logIn)
-                .delete("/session", this::logOut);
-                /*
+                .delete("/session", this::logOut)
+                //add list games on this line
+                .post("/game", this::createGame);
+        /*
                 .get("/game", this::listGames)
-                .post("/game", this::createGame)
                 .put("/game", this::joinGame)
                 .exception(DataAccessException.class, this::exceptionHandler) */
     }
@@ -44,20 +45,33 @@ public class Server {
         service.clearData();
     }
 
-    private void registerUser(Context ctx) throws AlreadyTakenException{
-        UserData userData = new Gson().fromJson(ctx.body(), UserData.class);
-        AuthData authData = service.registerUser(userData);
-        ctx.result(new Gson().toJson(authData));
+    private void registerUser(Context ctx){
+        try {
+            UserData userData = new Gson().fromJson(ctx.body(), UserData.class);
+            AuthData authData = service.registerUser(userData);
+            ctx.result(new Gson().toJson(authData));
+        } catch (AlreadyTakenException ex){
+            ctx.status(403);
+            ctx.result(new Gson().toJson("Error: username already taken"));
+        }
     }
 
     private void logIn(Context ctx){
-        UserData userData = new Gson().fromJson(ctx.body(), UserData.class);
-        AuthData authData = service.logIn(userData);
-        ctx.result(new Gson().toJson(authData));
+        try {
+            UserData userData = new Gson().fromJson(ctx.body(), UserData.class);
+            AuthData authData = service.logIn(userData);
+            ctx.result(new Gson().toJson(authData));
+        } catch (BadRequestException ex){
+            ctx.status(400);
+            ctx.result(new Gson().toJson("Error: bad request"));
+        } catch (UnauthorizedUserException ex){
+            ctx.status(401);
+            ctx.result(new Gson().toJson("Error: unauthorized user"));
+        }
     }
 
     private void logOut(Context ctx){
-        String authToken = new Gson().fromJson(ctx.body(), String.class);
+        String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
         service.logOut(authToken);
     }
 

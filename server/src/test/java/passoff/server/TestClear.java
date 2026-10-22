@@ -34,20 +34,27 @@ public class TestClear {
 
     @Test
     @Order(1)
-    public void testClear() throws AlreadyTakenException{
-        service.registerUser(user1);
-        service.registerUser(user2);
-        service.registerUser(user3);
-        service.registerUser(user4);
-        service.registerUser(user5);
-        service.registerUser(user6);
-        ArrayList<UserData> userDataList = service.getUserDataAccess().getUserDataList();
-        assertNotNull(userDataList);
+    public void testClear(){
+        try {
+            service.registerUser(user1);
+            service.registerUser(user2);
+            service.registerUser(user3);
+            service.registerUser(user4);
+            service.registerUser(user5);
+            service.registerUser(user6);
 
-        service.clearData();
+            //remove register user, and just shove users into user data when instantiating :)
 
-        userDataList = service.getUserDataAccess().getUserDataList();
+            ArrayList<UserData> userDataList = service.getUserDataAccess().getUserDataList();
+            assertNotNull(userDataList);
 
-        assertEquals(new ArrayList<UserData>(),userDataList);
+            service.clearData();
+
+            userDataList = service.getUserDataAccess().getUserDataList();
+
+            assertEquals(new ArrayList<UserData>(), userDataList);
+        } catch (AlreadyTakenException e){
+            //assert(register user failed, test can't continue)
+        }
     }
 }

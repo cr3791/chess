@@ -28,13 +28,20 @@ public class ChessService {
         }
     }
 
-    public AuthData logIn(UserData userData){
-        UserData storedUser = userDataAccess.getUser(userData);
+    public AuthData logIn(UserData userData) throws UnauthorizedUserException, BadRequestException{
+        try {
+            checkLogInInputs(userData);
+            UserData storedUser = userDataAccess.getUser(userData);
 
-        if(storedUser!=null && storedUser.password().equals(userData.password())){
-            return authDataAccess.addAuthData(userData.username());
+            if (storedUser != null && checkPassword(storedUser.password(), userData.password())) {
+                return authDataAccess.addAuthData(userData.username());
+            }
+            return null;
+        } catch (UnauthorizedUserException ex){
+            throw new UnauthorizedUserException("Unauthorized User");
+        } catch (BadRequestException ex){
+            throw new BadRequestException("Bad Request");
         }
-        return null;
     }
 
     public void logOut(String authToken){
@@ -42,6 +49,20 @@ public class ChessService {
 
         if(authData!=null){
             authDataAccess.removeAuthData(authData);
+        }
+    }
+
+    private boolean checkPassword(String storedPassword, String passwordAttempt) throws UnauthorizedUserException {
+        if(storedPassword.equals(passwordAttempt)){
+            return true;
+        } else {
+            throw new UnauthorizedUserException("");
+        }
+    }
+
+    private void checkLogInInputs(UserData userData) throws BadRequestException{
+        if (userData.username()==null || userData.password()==null || userData.email()!=null){
+            throw new BadRequestException("");
         }
     }
 
