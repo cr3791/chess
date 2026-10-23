@@ -122,7 +122,7 @@ public class Server {
 
     private void joinGame(Context ctx){
         try{
-            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            String authToken = ctx.header("authorization");
             GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
             JoinGameRequest joinGame = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
 
