@@ -80,7 +80,7 @@ public class Server {
 
     private void logOut(Context ctx){
         try {
-            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            String authToken = ctx.header("authorization");
             service.logOut(authToken);
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
@@ -91,7 +91,7 @@ public class Server {
 
     private void listGames(Context ctx){
         try {
-            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            String authToken = ctx.header("authorization");
             ArrayList<GameData> games = service.listGames(authToken);
             ctx.result(new Gson().toJson(Map.of("games", games)));
         } catch (UnauthorizedUserException ex){
@@ -103,7 +103,7 @@ public class Server {
 
     private void createGame(Context ctx){
         try{
-            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            String authToken = ctx.header("authorization");
             GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
 
             int gameID = service.createGame(authToken,gameData.gameName());
