@@ -209,12 +209,7 @@ public class ChessPiece {
         for(int i = 0; i<loop; i++){
             ChessPosition newPosition = new ChessPosition(myPosition.getRow()+y, myPosition.getColumn());
             if(withinBounds(newPosition)&&emptySpace(board,newPosition)){
-                if(checkPromotion(newPosition)){
-                    possibleMoves.addAll(promotion(board, newPosition, myPosition));
-                } else {
-                    possibleMoves.add(new ChessMove(myPosition, newPosition, null));
-                }
-
+                possibleMoves.addAll(pawnMoveList(board, newPosition, myPosition));
             }
 
             if(!emptySpace(board, newPosition)){
@@ -243,12 +238,20 @@ public class ChessPiece {
         ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
         if(checkPawnAttack(board, newPosition)){
-            if(checkPromotion(newPosition)){
-                possibleMoves.addAll(promotion(board, newPosition, myPosition));
-            } else {
-                possibleMoves.add(new ChessMove(myPosition, newPosition,null));
-            }
+            possibleMoves.addAll(pawnMoveList(board, newPosition, myPosition));
         }
+        return possibleMoves;
+    }
+
+    private Collection<ChessMove> pawnMoveList(ChessBoard board, ChessPosition newPosition, ChessPosition myPosition){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
+
+        if(checkPromotion(newPosition)){
+            possibleMoves.addAll(promotion(board, newPosition, myPosition));
+        } else {
+            possibleMoves.add(new ChessMove(myPosition, newPosition,null));
+        }
+
         return possibleMoves;
     }
 
