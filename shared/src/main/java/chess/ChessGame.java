@@ -221,9 +221,9 @@ public class ChessGame {
             ChessPiece.PieceType currentPiece = playingBoard.getPiece(currentPosition).getPieceType();
 
             boolean checkBothPawns = (lastMovePiece.equals(ChessPiece.PieceType.PAWN) && currentPiece.equals(ChessPiece.PieceType.PAWN));
-            boolean checkDifferentTeamColor = checkDifferentTeamColor(playingBoard.getPiece(currentPosition), playingBoard.getPiece(lastMove.getEndPosition()));
+            checkDifferentTeamColor(playingBoard.getPiece(currentPosition), playingBoard.getPiece(lastMove.getEndPosition()));
 
-            if (checkBothPawns && checkDifferentTeamColor) {
+            if(checkBothPawns&&checkDifferentTeamColor(playingBoard.getPiece(currentPosition),playingBoard.getPiece(lastMove.getEndPosition()))){
                 return checkEnPassantColumnsAndRows(lastMove.getEndPosition(), currentPosition);
             }
         }
