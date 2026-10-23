@@ -15,14 +15,28 @@ public class TestEndPoints {
     UserData newUser1 = new UserData("user", "pass", "email");
     UserData newUser2 = new UserData("user2", "pass2", "email2");
 
-    @BeforeAll
-    public static void setUp(){
+    @BeforeEach
+    public void setUp(){
         service = new ChessService(new MemoryUserDataAccess(), new MemoryGameDataAccess(), new MemoryAuthDataAccess());
     }
 
     @Test
     public void testClearSuccess(){
+        try {
+            AuthData authData = service.registerUser(newUser1);
 
+            service.createGame(authData.authToken(), "Party party");
+            service.createGame(authData.authToken(), "new Game");
+
+            service.clearData();
+
+            assertEquals(new ArrayList<AuthData>(), service.getAuthDataAccess().getAuthDataList());
+            assertEquals(new ArrayList<GameData>(), service.getGameDataAccess().getGameList());
+            assertEquals(new ArrayList<UserData>(), service.getUserDataAccess().getUserDataList());
+
+        } catch (AlreadyTakenException | BadRequestException | UnauthorizedUserException ex){
+            fail();
+        }
     }
 
     @Test
@@ -46,7 +60,7 @@ public class TestEndPoints {
             fail();
 
         } catch (AlreadyTakenException ex){
-            testClearSuccess();
+            assertTrue(true);
         } catch (BadRequestException ex){
             fail();
         }
@@ -62,7 +76,7 @@ public class TestEndPoints {
         } catch (AlreadyTakenException ex){
             fail();
         } catch (BadRequestException ex){
-            testClearSuccess();
+            assertTrue(true);
         }
     }
 
@@ -107,7 +121,7 @@ public class TestEndPoints {
         } catch (AlreadyTakenException | UnauthorizedUserException ex){
             fail();
         } catch (BadRequestException ex){
-            testClearSuccess();
+            assertTrue(true);
         }
     }
 
@@ -128,7 +142,7 @@ public class TestEndPoints {
         } catch (BadRequestException | AlreadyTakenException ex){
             fail();
         } catch (UnauthorizedUserException ex){
-            testClearSuccess();
+            assertTrue(true);
         }
     }
 
@@ -165,7 +179,7 @@ public class TestEndPoints {
         } catch (AlreadyTakenException | BadRequestException ex){
             fail();
         } catch (UnauthorizedUserException ex){
-            testClearSuccess();
+            assertTrue(true);
         }
     }
 
@@ -201,7 +215,7 @@ public class TestEndPoints {
         } catch (BadRequestException | AlreadyTakenException ex){
             fail();
         } catch (UnauthorizedUserException ex){
-            testClearSuccess();
+            assertTrue(true);
         }
     }
 
@@ -259,63 +273,61 @@ public class TestEndPoints {
             fail();
         }
     }
-/*
+
     @Test
-    public void testListGamesUnauthorizedUserFailure(){
+    public void testJoinGameBadRequestFailure(){
         try{
             AuthData authData = service.registerUser(newUser1);
 
             service.createGame(authData.authToken(), "Party party");
-            service.createGame(authData.authToken(), "Party party party");
+            int gameID = service.createGame(authData.authToken(), "Party party party");
 
-            ArrayList<GameData> gameList = service.listGames("haha");
+            GameData gameData = new GameData(gameID, null, null, null, null);
+            service.joinGame(null, gameData, "BLACK");
+            fail();
 
+        } catch (UnauthorizedUserException | AlreadyTakenException ex){
+            fail();
+        } catch (BadRequestException ex){
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    public void testJoinGameUnauthorizedUserFailure(){
+        try{
+            AuthData authData = service.registerUser(newUser1);
+
+            service.createGame(authData.authToken(), "Party party");
+            int gameID = service.createGame(authData.authToken(), "Party party party");
+
+            GameData gameData = new GameData(gameID, null, null, null, null);
+            service.joinGame("ladeeda", gameData, "BLACK");
             fail();
 
         } catch (BadRequestException | AlreadyTakenException ex){
             fail();
         } catch (UnauthorizedUserException ex){
-            testClearSuccess();
+            assertTrue(true);
         }
     }
 
     @Test
-    public void testListGamesUnauthorizedUserFailure(){
+    public void testJoinGameAlreadyTakenFailure(){
         try{
             AuthData authData = service.registerUser(newUser1);
+            int gameID = service.createGame(authData.authToken(), "Party party");
 
-            service.createGame(authData.authToken(), "Party party");
-            service.createGame(authData.authToken(), "Party party party");
+            GameData gameData = new GameData(gameID, null, null, null, null);
 
-            ArrayList<GameData> gameList = service.listGames("haha");
-
+            service.joinGame(authData.authToken(), gameData, "BLACK");
+            service.joinGame(authData.authToken(), gameData, "BLACK");
             fail();
 
-        } catch (BadRequestException | AlreadyTakenException ex){
+        } catch (BadRequestException | UnauthorizedUserException ex){
             fail();
-        } catch (UnauthorizedUserException ex){
-            testClearSuccess();
+        } catch (AlreadyTakenException ex){
+            assertTrue(true);
         }
     }
-
-    @Test
-    public void testListGamesUnauthorizedUserFailure(){
-        try{
-            AuthData authData = service.registerUser(newUser1);
-
-            service.createGame(authData.authToken(), "Party party");
-            service.createGame(authData.authToken(), "Party party party");
-
-            ArrayList<GameData> gameList = service.listGames("haha");
-
-            fail();
-
-        } catch (BadRequestException | AlreadyTakenException ex){
-            fail();
-        } catch (UnauthorizedUserException ex){
-            testClearSuccess();
-        }
-    }
-
- */
 }
