@@ -221,13 +221,17 @@ public class ChessGame {
             ChessPiece.PieceType currentPiece = playingBoard.getPiece(currentPosition).getPieceType();
 
             boolean checkBothPawns = (lastMovePiece.equals(ChessPiece.PieceType.PAWN) && currentPiece.equals(ChessPiece.PieceType.PAWN));
-            boolean checkDifferentTeamColor = (playingBoard.getPiece(currentPosition).getTeamColor() != playingBoard.getPiece(lastMove.getEndPosition()).getTeamColor());
+            boolean checkDifferentTeamColor = checkDifferentTeamColor(playingBoard.getPiece(currentPosition), playingBoard.getPiece(lastMove.getEndPosition()));
 
             if (checkBothPawns && checkDifferentTeamColor) {
                 return checkEnPassantColumnsAndRows(lastMove.getEndPosition(), currentPosition);
             }
         }
         return false;
+    }
+
+    private boolean checkDifferentTeamColor(ChessPiece piece1, ChessPiece piece2){
+        return piece1.getTeamColor() != piece2.getTeamColor();
     }
 
     private boolean checkEnPassantColumnsAndRows(ChessPosition lastPosition,ChessPosition currentPosition){
