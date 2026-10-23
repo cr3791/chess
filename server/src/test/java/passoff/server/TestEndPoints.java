@@ -28,12 +28,12 @@ public class TestEndPoints {
     @Test
     public void testRegisterNewUserSuccess(){
         try {
-            AuthData authData1 = service.registerUser(newUser1);
-            AuthData authData2 = service.registerUser(newUser2);
+            service.registerUser(newUser1);
+            service.registerUser(newUser2);
             UserDataAccess userDAO = service.getUserDataAccess();
             assertEquals(userDAO.getUser(newUser1),newUser1);
             assertEquals(userDAO.getUser(newUser2),newUser2);
-        } catch (AlreadyTakenException ex){
+        } catch (AlreadyTakenException | BadRequestException ex){
             fail();
         }
     }
@@ -41,11 +41,27 @@ public class TestEndPoints {
     @Test
     public void testRegisterExistingFailure(){
         try {
-            AuthData authData1 = service.registerUser(newUser1);
-            AuthData authData2 = service.registerUser(newUser1);
+            service.registerUser(newUser1);
+            service.registerUser(newUser1);
             fail();
 
         } catch (AlreadyTakenException ex){
+            testClearSuccess();
+        } catch (BadRequestException ex){
+            fail();
+        }
+    }
+
+    @Test
+    public void testRegisterBadRequestFailure(){
+        try {
+            service.registerUser(newUser1);
+            service.registerUser(new UserData(null, "yay", null));
+            fail();
+
+        } catch (AlreadyTakenException ex){
+            fail();
+        } catch (BadRequestException ex){
             testClearSuccess();
         }
     }
@@ -84,7 +100,7 @@ public class TestEndPoints {
             service.logOut(authData1.authToken());
             service.logOut(authData2.authToken());
 
-            authData1 = service.logIn(newUser3);
+            service.logIn(newUser3);
 
             fail();
 
@@ -105,7 +121,7 @@ public class TestEndPoints {
             service.logOut(authData1.authToken());
             service.logOut(authData2.authToken());
 
-            authData1 = service.logIn(newUser3);
+            service.logIn(newUser3);
 
             fail();
 
@@ -131,7 +147,7 @@ public class TestEndPoints {
             assertEquals(new ArrayList<AuthData>(), authDataAccess.getAuthDataList());
             assertEquals(2, userDataAccess.getUserDataList().size());
 
-        } catch (AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (AlreadyTakenException | UnauthorizedUserException | BadRequestException ex){
             fail();
         }
     }
@@ -139,14 +155,14 @@ public class TestEndPoints {
     @Test
     public void testlogOutFailure(){
         try {
-            AuthData authData1 = service.registerUser(newUser1);
-            AuthData authData2 = service.registerUser(newUser2);
+            service.registerUser(newUser1);
+            service.registerUser(newUser2);
             service.logOut("happy");
             service.logOut("goofy");
 
             fail();
 
-        } catch (AlreadyTakenException ex){
+        } catch (AlreadyTakenException | BadRequestException ex){
             fail();
         } catch (UnauthorizedUserException ex){
             testClearSuccess();
@@ -197,8 +213,6 @@ public class TestEndPoints {
             service.createGame(authData.authToken(), "Party party");
             service.createGame(authData.authToken(), "Party party party");
 
-            GameDataAccess gameDataAccess = service.getGameDataAccess();
-
             ArrayList<GameData> gameList = service.listGames(authData.authToken());
 
             assertEquals(2, gameList.size());
@@ -236,7 +250,6 @@ public class TestEndPoints {
             GameData gameData = new GameData(gameID, null, null, null, null);
 
             service.joinGame(authData.authToken(), gameData, "BLACK");
-
             ArrayList<GameData> gameList = service.listGames(authData.authToken());
 
             for(GameData game : gameList){

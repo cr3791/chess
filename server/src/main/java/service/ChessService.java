@@ -21,12 +21,17 @@ public class ChessService {
         authDataAccess.clearAuthData();
     }
 
-    public AuthData registerUser(UserData userData) throws AlreadyTakenException {
-        if (userDataAccess.getUser(userData) == null){
-            userDataAccess.addUser(userData);
-            return authDataAccess.addAuthData(userData.username());
-        } else {
-            throw new AlreadyTakenException("This username is already taken");
+    public AuthData registerUser(UserData userData) throws AlreadyTakenException, BadRequestException {
+        try {
+            checkRegisterInputs(userData);
+            if (userDataAccess.getUser(userData) == null) {
+                userDataAccess.addUser(userData);
+                return authDataAccess.addAuthData(userData.username());
+            } else {
+                throw new AlreadyTakenException("This username is already taken");
+            }
+        } catch (BadRequestException ex){
+            throw new BadRequestException("");
         }
     }
 
@@ -108,6 +113,12 @@ public class ChessService {
             return true;
         } else {
             throw new UnauthorizedUserException("");
+        }
+    }
+
+    private void checkRegisterInputs(UserData userData) throws BadRequestException{
+        if(userData.username() == null || userData.password() == null || userData.email() == null){
+            throw new BadRequestException("");
         }
     }
 

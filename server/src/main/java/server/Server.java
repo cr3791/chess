@@ -1,6 +1,5 @@
 package server;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import dataaccess.*;
 import model.*;
@@ -10,9 +9,7 @@ import request.JoinGameRequest;
 import service.ChessService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ForkJoinTask;
 
 public class Server {
     private final ChessService service;
@@ -57,6 +54,10 @@ public class Server {
         } catch (AlreadyTakenException ex){
             ctx.status(403);
             String error = new Gson().toJson(Map.of("message", "Error: already taken"));
+            ctx.result(error);
+        } catch (BadRequestException ex){
+            ctx.status(400);
+            String error = new Gson().toJson(Map.of("message", "Error: bad request"));
             ctx.result(error);
         }
     }
@@ -103,7 +104,6 @@ public class Server {
     private void createGame(Context ctx){
         try{
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
-            String context_body = ctx.body();
             GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
 
             int gameID = service.createGame(authToken,gameData.gameName());
@@ -124,9 +124,9 @@ public class Server {
         try{
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
             GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
-            JoinGameRequest joingame = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
+            JoinGameRequest joinGame = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
 
-            service.joinGame(authToken, gameData, joingame.playerColor());
+            service.joinGame(authToken, gameData, joinGame.playerColor());
 
         } catch (BadRequestException ex){
             ctx.status(400);
