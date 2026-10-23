@@ -42,7 +42,8 @@ public class MemoryGameDataAccess implements GameDataAccess{
     public void addWhitePlayer(String username, int gameID) {
         for(GameData game : gameDataList){
             if (game.gameID() == gameID){
-                game.setWhiteUsername(username);
+                gameDataList.remove(game);
+                gameDataList.add(game.setWhiteUsername(username));
             }
         }
     }
@@ -51,7 +52,8 @@ public class MemoryGameDataAccess implements GameDataAccess{
     public void addBlackPlayer(String username, int gameID) {
         for(GameData game : gameDataList){
             if (game.gameID() == gameID){
-                game.setBlackUsername(username);
+                gameDataList.remove(game);
+                gameDataList.add(game.setBlackUsername(username));
             }
         }
     }
