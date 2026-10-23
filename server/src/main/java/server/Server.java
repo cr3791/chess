@@ -6,10 +6,13 @@ import dataaccess.*;
 import model.*;
 import io.javalin.*;
 import io.javalin.http.Context;
+import request.JoinGameRequest;
 import service.ChessService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ForkJoinTask;
 
 public class Server {
     private final ChessService service;
@@ -89,7 +92,7 @@ public class Server {
         try {
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
             ArrayList<GameData> games = service.listGames(authToken);
-            ctx.result(new Gson().toJson(games));
+            ctx.result(new Gson().toJson(Map.of("games", games)));
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
             String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
@@ -100,10 +103,11 @@ public class Server {
     private void createGame(Context ctx){
         try{
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
-            String gameName = new Gson().fromJson(ctx.body(), String.class);
+            String context_body = ctx.body();
+            GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
 
-            int gameID = service.createGame(authToken,gameName);
-            ctx.result(new Gson().toJson(gameID));
+            int gameID = service.createGame(authToken,gameData.gameName());
+            ctx.result(new Gson().toJson(Map.of("gameID", gameID)));
 
         } catch (BadRequestException ex){
             ctx.status(400);
@@ -120,9 +124,9 @@ public class Server {
         try{
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
             GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
-            String playerColor = new Gson().fromJson(ctx.body(), String.class);
+            JoinGameRequest joingame = new Gson().fromJson(ctx.body(), JoinGameRequest.class);
 
-            service.joinGame(authToken, gameData, playerColor);
+            service.joinGame(authToken, gameData, joingame.playerColor());
 
         } catch (BadRequestException ex){
             ctx.status(400);

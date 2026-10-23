@@ -37,6 +37,8 @@ public class ChessService {
 
             if (storedUser != null && checkPassword(storedUser.password(), userData.password())) {
                 return authDataAccess.addAuthData(userData.username());
+            } else if (storedUser == null || !checkPassword(storedUser.password(), userData.password())){
+                throw new UnauthorizedUserException("Unauthorized User");
             }
             return null;
         } catch (UnauthorizedUserException ex){
