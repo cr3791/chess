@@ -17,12 +17,12 @@ public class ChessPiece {
     ChessGame.TeamColor pieceColor;
     ChessPiece.PieceType type;
 
-    private boolean has_moved;
+    private boolean hasMoved;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
-        has_moved = false;
+        hasMoved = false;
     }
 
     /**
@@ -60,46 +60,46 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessPiece piece = board.getPiece(myPosition);
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
         switch(piece.getPieceType()){
             case KING:
-                possible_moves.addAll(king_move(board, myPosition));
+                possibleMoves.addAll(kingMove(board, myPosition));
                 break;
             case QUEEN:
-                possible_moves.addAll(bishop_move(board, myPosition));
-                possible_moves.addAll(rook_move(board, myPosition));
+                possibleMoves.addAll(bishopMove(board, myPosition));
+                possibleMoves.addAll(rookMove(board, myPosition));
                 break;
             case ROOK:
-                possible_moves.addAll(rook_move(board, myPosition));
+                possibleMoves.addAll(rookMove(board, myPosition));
                 break;
             case BISHOP:
-                possible_moves.addAll(bishop_move(board, myPosition));
+                possibleMoves.addAll(bishopMove(board, myPosition));
                 break;
             case KNIGHT:
-                possible_moves.addAll(knight_move(board, myPosition));
+                possibleMoves.addAll(knightMove(board, myPosition));
                 break;
             case PAWN:
-                possible_moves.addAll(pawn_move(board, myPosition));
+                possibleMoves.addAll(pawnMove(board, myPosition));
                 break;
             default:
                 throw new RuntimeException("Not a valid piece");
         }
 
-        return possible_moves;
+        return possibleMoves;
     }
 
     private ArrayList<ChessMove> move(ChessBoard board, ChessPosition myPosition, int x, int y, boolean limiter){
         boolean end = limiter;
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
         do{
             ChessPosition newPosition = new ChessPosition(myPosition.getRow()+x, myPosition.getColumn()+y);
-            if(within_bounds(newPosition)){
-                if(empty_space(board, newPosition)){
-                    possible_moves.add(new ChessMove(myPosition,newPosition,null));
+            if(withinBounds(newPosition)){
+                if(emptySpace(board, newPosition)){
+                    possibleMoves.add(new ChessMove(myPosition,newPosition,null));
                 } else {
-                    if (enemy_piece(board.getPiece(myPosition), board.getPiece(newPosition))){
-                        possible_moves.add(new ChessMove(myPosition,newPosition,null));
+                    if (enemyPiece(board.getPiece(myPosition), board.getPiece(newPosition))){
+                        possibleMoves.add(new ChessMove(myPosition,newPosition,null));
                     }
                     end = true;
                 }
@@ -109,7 +109,7 @@ public class ChessPiece {
             x = iterate(x);
             y = iterate(y);
         } while (!end);
-        return possible_moves;
+        return possibleMoves;
     }
 
     private int iterate(int num){
@@ -123,101 +123,101 @@ public class ChessPiece {
         return num;
     }
 
-    private ArrayList<ChessMove> king_move(ChessBoard board, ChessPosition myPosition){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+    private ArrayList<ChessMove> kingMove(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
         for (int x = -1; x<2; x++){
             for (int y = -1; y<2; y++){
                 if (y==0 && x == 0){
                     continue;
                 } else {
-                    possible_moves.addAll(move(board,myPosition,x,y,true));
+                    possibleMoves.addAll(move(board,myPosition,x,y,true));
                 }
             }
         }
 
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private ArrayList<ChessMove> rook_move(ChessBoard board, ChessPosition myPosition){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+    private ArrayList<ChessMove> rookMove(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
-        possible_moves.addAll(move(board, myPosition, 1,0,false));
-        possible_moves.addAll(move(board, myPosition, -1,0,false));
-        possible_moves.addAll(move(board, myPosition, 0,-1,false));
-        possible_moves.addAll(move(board, myPosition, 0,1,false));
+        possibleMoves.addAll(move(board, myPosition, 1,0,false));
+        possibleMoves.addAll(move(board, myPosition, -1,0,false));
+        possibleMoves.addAll(move(board, myPosition, 0,-1,false));
+        possibleMoves.addAll(move(board, myPosition, 0,1,false));
 
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private ArrayList<ChessMove> bishop_move(ChessBoard board, ChessPosition myPosition){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+    private ArrayList<ChessMove> bishopMove(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
-        possible_moves.addAll(move(board, myPosition, 1,1,false));
-        possible_moves.addAll(move(board, myPosition, -1,1,false));
-        possible_moves.addAll(move(board, myPosition, 1,-1,false));
-        possible_moves.addAll(move(board, myPosition, -1,-1,false));
+        possibleMoves.addAll(move(board, myPosition, 1,1,false));
+        possibleMoves.addAll(move(board, myPosition, -1,1,false));
+        possibleMoves.addAll(move(board, myPosition, 1,-1,false));
+        possibleMoves.addAll(move(board, myPosition, -1,-1,false));
 
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private ArrayList<ChessMove> knight_move(ChessBoard board, ChessPosition myPosition){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+    private ArrayList<ChessMove> knightMove(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
-        possible_moves.addAll(move(board, myPosition, 1,2,true));
-        possible_moves.addAll(move(board, myPosition, -1,2,true));
-        possible_moves.addAll(move(board, myPosition, 1,-2,true));
-        possible_moves.addAll(move(board, myPosition, -1,-2,true));
-        possible_moves.addAll(move(board, myPosition, 2,1,true));
-        possible_moves.addAll(move(board, myPosition, 2,-1,true));
-        possible_moves.addAll(move(board, myPosition, -2,1,true));
-        possible_moves.addAll(move(board, myPosition, -2,-1,true));
+        possibleMoves.addAll(move(board, myPosition, 1,2,true));
+        possibleMoves.addAll(move(board, myPosition, -1,2,true));
+        possibleMoves.addAll(move(board, myPosition, 1,-2,true));
+        possibleMoves.addAll(move(board, myPosition, -1,-2,true));
+        possibleMoves.addAll(move(board, myPosition, 2,1,true));
+        possibleMoves.addAll(move(board, myPosition, 2,-1,true));
+        possibleMoves.addAll(move(board, myPosition, -2,1,true));
+        possibleMoves.addAll(move(board, myPosition, -2,-1,true));
 
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private ArrayList<ChessMove> pawn_move(ChessBoard board, ChessPosition myPosition){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+    private ArrayList<ChessMove> pawnMove(ChessBoard board, ChessPosition myPosition){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
         switch(pieceColor){
             case BLACK:
-                if (check_starting(myPosition)){
-                    possible_moves.addAll(pawn_forward(board,myPosition,-1,2));
+                if (checkStarting(myPosition)){
+                    possibleMoves.addAll(pawnForward(board,myPosition,-1,2));
                 } else {
-                    possible_moves.addAll(pawn_forward(board,myPosition,-1,1));
+                    possibleMoves.addAll(pawnForward(board,myPosition,-1,1));
                 }
-                possible_moves.addAll(pawn_attack(board,myPosition,-1,1));
-                possible_moves.addAll(pawn_attack(board,myPosition,-1,-1));
+                possibleMoves.addAll(pawnAttack(board,myPosition,-1,1));
+                possibleMoves.addAll(pawnAttack(board,myPosition,-1,-1));
                 break;
             case WHITE:
-                if (check_starting(myPosition)){
-                    possible_moves.addAll(pawn_forward(board,myPosition,1,2));
+                if (checkStarting(myPosition)){
+                    possibleMoves.addAll(pawnForward(board,myPosition,1,2));
                 } else {
-                    possible_moves.addAll(pawn_forward(board,myPosition,1,1));
+                    possibleMoves.addAll(pawnForward(board,myPosition,1,1));
                 }
-                possible_moves.addAll(pawn_attack(board,myPosition,1,-1));
-                possible_moves.addAll(pawn_attack(board,myPosition,1,1));
+                possibleMoves.addAll(pawnAttack(board,myPosition,1,-1));
+                possibleMoves.addAll(pawnAttack(board,myPosition,1,1));
                 break;
         }
 
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private ArrayList<ChessMove> pawn_forward(ChessBoard board, ChessPosition myPosition, int y, int loop){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+    private ArrayList<ChessMove> pawnForward(ChessBoard board, ChessPosition myPosition, int y, int loop){
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
         for(int i = 0; i<loop; i++){
             ChessPosition newPosition = new ChessPosition(myPosition.getRow()+y, myPosition.getColumn());
-            if(within_bounds(newPosition)&&empty_space(board,newPosition)){
-                if(check_promotion(newPosition)){
-                    possible_moves.addAll(promotion(board, newPosition, myPosition));
+            if(withinBounds(newPosition)&&emptySpace(board,newPosition)){
+                if(checkPromotion(newPosition)){
+                    possibleMoves.addAll(promotion(board, newPosition, myPosition));
                 } else {
-                    possible_moves.add(new ChessMove(myPosition, newPosition, null));
+                    possibleMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
 
             }
 
-            if(!empty_space(board, newPosition)){
+            if(!emptySpace(board, newPosition)){
                 i++;
             }
 
@@ -226,11 +226,11 @@ public class ChessPiece {
 
         }
 
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private boolean check_pawn_attack(ChessBoard board, ChessPosition newPosition) {
-        if(within_bounds(newPosition) && !(empty_space(board, newPosition))){
+    private boolean checkPawnAttack(ChessBoard board, ChessPosition newPosition) {
+        if(withinBounds(newPosition) && !(emptySpace(board, newPosition))){
             if(board.getPiece(newPosition).getTeamColor() != pieceColor){
                 return true;
             }
@@ -238,21 +238,21 @@ public class ChessPiece {
         return false;
     }
 
-    private ArrayList<ChessMove> pawn_attack(ChessBoard board, ChessPosition myPosition, int x, int y){
+    private ArrayList<ChessMove> pawnAttack(ChessBoard board, ChessPosition myPosition, int x, int y){
         ChessPosition newPosition = new ChessPosition(myPosition.getRow()+x, myPosition.getColumn()+y);
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
-        if(check_pawn_attack(board, newPosition)){
-            if(check_promotion(newPosition)){
-                possible_moves.addAll(promotion(board, newPosition, myPosition));
+        if(checkPawnAttack(board, newPosition)){
+            if(checkPromotion(newPosition)){
+                possibleMoves.addAll(promotion(board, newPosition, myPosition));
             } else {
-                possible_moves.add(new ChessMove(myPosition, newPosition,null));
+                possibleMoves.add(new ChessMove(myPosition, newPosition,null));
             }
         }
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private boolean check_starting(ChessPosition myPosition){
+    private boolean checkStarting(ChessPosition myPosition){
         switch(pieceColor){
             case BLACK:
                 if (myPosition.getRow()==7){
@@ -268,7 +268,7 @@ public class ChessPiece {
         return false;
     }
 
-    private boolean check_promotion(ChessPosition newPosition){
+    private boolean checkPromotion(ChessPosition newPosition){
         switch(pieceColor){
             case BLACK:
                 if (newPosition.getRow()==1){
@@ -285,18 +285,18 @@ public class ChessPiece {
     }
 
     private ArrayList<ChessMove> promotion (ChessBoard board, ChessPosition newPosition, ChessPosition myPosition){
-        ArrayList<ChessMove> possible_moves = new ArrayList<>();
+        ArrayList<ChessMove> possibleMoves = new ArrayList<>();
 
-        if(empty_space(board, newPosition) || check_pawn_attack(board, newPosition)){
-            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.KNIGHT));
-            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.QUEEN));
-            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.ROOK));
-            possible_moves.add(new ChessMove(myPosition,newPosition,PieceType.BISHOP));
+        if(emptySpace(board, newPosition) || checkPawnAttack(board, newPosition)){
+            possibleMoves.add(new ChessMove(myPosition,newPosition,PieceType.KNIGHT));
+            possibleMoves.add(new ChessMove(myPosition,newPosition,PieceType.QUEEN));
+            possibleMoves.add(new ChessMove(myPosition,newPosition,PieceType.ROOK));
+            possibleMoves.add(new ChessMove(myPosition,newPosition,PieceType.BISHOP));
         }
-        return possible_moves;
+        return possibleMoves;
     }
 
-    private boolean within_bounds (ChessPosition myPosition){
+    private boolean withinBounds (ChessPosition myPosition){
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
 
@@ -306,26 +306,26 @@ public class ChessPiece {
         return true;
     }
 
-    private boolean empty_space(ChessBoard board, ChessPosition newPosition){
+    private boolean emptySpace(ChessBoard board, ChessPosition newPosition){
         if (board.getPiece(newPosition)== null){
             return true;
         }
         return false;
     }
 
-    private boolean enemy_piece(ChessPiece oldPiece, ChessPiece enemyPiece){
+    private boolean enemyPiece(ChessPiece oldPiece, ChessPiece enemyPiece){
         if(oldPiece.getTeamColor() == enemyPiece.getTeamColor()){
             return false;
         }
         return true;
     }
 
-    public void setHas_moved(boolean set){
-        has_moved = set;
+    public void setHasMoved(boolean set){
+        hasMoved = set;
     }
 
-    public boolean get_has_moved(){
-        return has_moved;
+    public boolean getHasMoved(){
+        return hasMoved;
     }
 
     @Override

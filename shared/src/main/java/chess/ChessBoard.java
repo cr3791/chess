@@ -11,14 +11,14 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    ChessPiece[][] playing_board = new ChessPiece[8][8];
+    ChessPiece[][] playingBoard = new ChessPiece[8][8];
     public ChessBoard() {
     }
 
     public ChessBoard(ChessBoard other){
         for(int i = 0; i<8; i++){
             for(int j = 0; j<8; j++){
-                this.playing_board[i][j] = other.getPiece(new ChessPosition(i+1, j+1));
+                this.playingBoard[i][j] = other.getPiece(new ChessPosition(i+1, j+1));
             }
         }
     }
@@ -30,7 +30,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        playing_board[position.getRow() - 1][position.getColumn() - 1] = piece;
+        playingBoard[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
     /**
      * Gets a chess piece on the chessboard
@@ -40,7 +40,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return playing_board[position.getRow()-1][position.getColumn()-1];
+        return playingBoard[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -48,15 +48,15 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        ChessPiece[][] blank_board = blank_board();
+        ChessPiece[][] blankBoard = blankBoard();
         for (int i = 0; i<8; i++){
             for (int j = 0; j<8; j++){
-                playing_board[i][j] = blank_board[i][j];
+                playingBoard[i][j] = blankBoard[i][j];
             }
         }
     }
 
-    private ChessPiece[][] blank_board(){
+    private ChessPiece[][] blankBoard(){
         ChessPiece[][] board = new ChessPiece[8][8];
 
         for (int i =0; i<8; i++){
@@ -93,11 +93,11 @@ public class ChessBoard {
             return false;
         }
         ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(playing_board, that.playing_board);
+        return Objects.deepEquals(playingBoard, that.playingBoard);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(playing_board);
+        return Arrays.deepHashCode(playingBoard);
     }
 }
