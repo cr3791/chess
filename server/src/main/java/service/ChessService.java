@@ -67,12 +67,37 @@ public class ChessService {
     }
 
     public int createGame(String authToken, String gameName) throws BadRequestException, UnauthorizedUserException{
-        AuthData authData = authDataAccess.getAuthData(authToken);
+        try{
+            checkCreateGameInputs(authToken, gameName);
+            AuthData authData = authDataAccess.getAuthData(authToken);
 
-        if(authData!=null){
-            return gameDataAccess.createGame(gameName);
-        } else {
-            throw new UnauthorizedUserException("");
+            if(authData!=null){
+                return gameDataAccess.createGame(gameName);
+            } else {
+                throw new UnauthorizedUserException("");
+            }
+        } catch (BadRequestException ex){
+            throw new BadRequestException("");
+        }
+    }
+
+    public void joinGame(String authToken, GameData gameData, String playerColor) throws AlreadyTakenException, BadRequestException, UnauthorizedUserException{
+        try{
+            checkJoinGameInputs(authToken, gameData, playerColor);
+            playerColor = identifyPlayerColor(playerColor);
+
+            AuthData authData = authDataAccess.getAuthData(authToken);
+
+            if(authData!=null){
+                checkIfPlayerTaken(playerColor, gameData);
+                addNewPlayer(playerColor, gameData.gameID(), authToken);
+            } else {
+                throw new UnauthorizedUserException("");
+            }
+        } catch (BadRequestException ex){
+            throw new BadRequestException("");
+        } catch (AlreadyTakenException ex){
+            throw new AlreadyTakenException("");
         }
     }
 
@@ -85,8 +110,54 @@ public class ChessService {
     }
 
     private void checkLogInInputs(UserData userData) throws BadRequestException{
-        if (userData.username()==null || userData.password()==null || userData.email()!=null){
+        if (userData.username()==null || userData.password()==null){
             throw new BadRequestException("");
+        }
+    }
+
+    private void checkCreateGameInputs(String authToken, String gameName) throws BadRequestException{
+        if(authToken==null || gameName == null){
+            throw new BadRequestException("");
+        }
+    }
+
+    private void checkJoinGameInputs(String authToken, GameData gameData, String playerColor) throws BadRequestException{
+        if(authToken == null || gameData == null || playerColor == null){
+            throw new BadRequestException("");
+        }
+    }
+
+    private String identifyPlayerColor(String playerColor) throws BadRequestException{
+        if(playerColor.equalsIgnoreCase("white")){
+            return "white";
+        } else if (playerColor.equalsIgnoreCase("black")){
+            return "black";
+        } else {
+            throw new BadRequestException("");
+        }
+    }
+
+    private void checkIfPlayerTaken(String playerColor, GameData gameData) throws AlreadyTakenException, BadRequestException {
+        GameData game = gameDataAccess.getGame(gameData.gameID());
+
+        if(game == null){
+            throw new BadRequestException("Game doesn't exist");
+        }
+
+        if(playerColor.equals("white") && game.whiteUsername() != null){
+            throw new AlreadyTakenException("");
+        } else if (playerColor.equals("black") && game.blackUsername() != null){
+            throw new AlreadyTakenException("");
+        }
+    }
+
+    private void addNewPlayer(String playerColor, int gameID, String authToken){
+        String username = authDataAccess.getAuthData(authToken).username();
+
+        if(playerColor.equals("white")){
+            gameDataAccess.addWhitePlayer(username, gameID);
+        } else if (playerColor.equals("black")){
+            gameDataAccess.addBlackPlayer(username, gameID);
         }
     }
 

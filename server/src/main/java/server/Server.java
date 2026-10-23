@@ -9,6 +9,7 @@ import io.javalin.http.Context;
 import service.ChessService;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Server {
     private final ChessService service;
@@ -52,7 +53,8 @@ public class Server {
             ctx.result(new Gson().toJson(authData));
         } catch (AlreadyTakenException ex){
             ctx.status(403);
-            ctx.result(new Gson().toJson("Error: username already taken"));
+            String error = new Gson().toJson(Map.of("message", "Error: already taken"));
+            ctx.result(error);
         }
     }
 
@@ -63,10 +65,12 @@ public class Server {
             ctx.result(new Gson().toJson(authData));
         } catch (BadRequestException ex){
             ctx.status(400);
-            ctx.result(new Gson().toJson("Error: bad request"));
+            String error = new Gson().toJson(Map.of("message", "Error: bad request"));
+            ctx.result(error);
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
-            ctx.result(new Gson().toJson("Error: unauthorized user"));
+            String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
         }
     }
 
@@ -76,7 +80,8 @@ public class Server {
             service.logOut(authToken);
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
-            ctx.result(new Gson().toJson("Error: unauthorized user"));
+            String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
         }
     }
 
@@ -87,11 +92,12 @@ public class Server {
             ctx.result(new Gson().toJson(games));
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
-            ctx.result(new Gson().toJson("Error: unauthorized user"));
+            String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
         }
     }
 
-    private int createGame(Context ctx){
+    private void createGame(Context ctx){
         try{
             String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
             String gameName = new Gson().fromJson(ctx.body(), String.class);
@@ -101,14 +107,35 @@ public class Server {
 
         } catch (BadRequestException ex){
             ctx.status(400);
-            ctx.result(new Gson().toJson("Error: bad request"));
+            String error = new Gson().toJson(Map.of("message", "Error: bad request"));
+            ctx.result(error);
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
-            ctx.result(new Gson().toJson("Error: unauthorized user"));
+            String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
         }
     }
 
     private void joinGame(Context ctx){
+        try{
+            String authToken = new Gson().fromJson(ctx.header("authorization"), String.class);
+            GameData gameData = new Gson().fromJson(ctx.body(), GameData.class);
+            String playerColor = new Gson().fromJson(ctx.body(), String.class);
 
+            service.joinGame(authToken, gameData, playerColor);
+
+        } catch (BadRequestException ex){
+            ctx.status(400);
+            String error = new Gson().toJson(Map.of("message", "Error: bad request"));
+            ctx.result(error);
+        } catch (UnauthorizedUserException ex){
+            ctx.status(401);
+            String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
+        } catch (AlreadyTakenException ex){
+            ctx.status(403);
+            String error = new Gson().toJson(Map.of("message", "Error: already taken"));
+            ctx.result(error);
+        }
     }
 }

@@ -28,6 +28,34 @@ public class MemoryGameDataAccess implements GameDataAccess{
         return gameDataList;
     }
 
+    @Override
+    public GameData getGame(int gameID) {
+        for(GameData game : gameDataList){
+            if (game.gameID() == gameID){
+                return game;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void addWhitePlayer(String username, int gameID) {
+        for(GameData game : gameDataList){
+            if (game.gameID() == gameID){
+                game.setWhiteUsername(username);
+            }
+        }
+    }
+
+    @Override
+    public void addBlackPlayer(String username, int gameID) {
+        for(GameData game : gameDataList){
+            if (game.gameID() == gameID){
+                game.setBlackUsername(username);
+            }
+        }
+    }
+
     private int generateGameID(){
         return gameIDGenerator.getAndIncrement();
     }
