@@ -1,10 +1,9 @@
-package passoff.server;
+package service;
 
 import chess.ChessGame;
 import dataaccess.*;
 import org.junit.jupiter.api.*;
 import model.*;
-import service.ChessService;
 
 import java.util.ArrayList;
 
