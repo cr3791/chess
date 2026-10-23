@@ -220,7 +220,10 @@ public class ChessGame {
             ChessPiece.PieceType lastMovePiece = playingBoard.getPiece(lastMove.getEndPosition()).getPieceType();
             ChessPiece.PieceType currentPiece = playingBoard.getPiece(currentPosition).getPieceType();
 
-            if (lastMovePiece.equals(ChessPiece.PieceType.PAWN) && currentPiece.equals(ChessPiece.PieceType.PAWN) && playingBoard.getPiece(currentPosition).getTeamColor() != playingBoard.getPiece(lastMove.getEndPosition()).getTeamColor()) {
+            boolean checkBothPawns = (lastMovePiece.equals(ChessPiece.PieceType.PAWN) && currentPiece.equals(ChessPiece.PieceType.PAWN));
+            boolean checkDifferentTeamColor = (playingBoard.getPiece(currentPosition).getTeamColor() != playingBoard.getPiece(lastMove.getEndPosition()).getTeamColor());
+
+            if (checkBothPawns && checkDifferentTeamColor) {
                 return checkEnPassantColumnsAndRows(lastMove.getEndPosition(), currentPosition);
             }
         }
@@ -229,11 +232,15 @@ public class ChessGame {
 
     private boolean checkEnPassantColumnsAndRows(ChessPosition lastPosition,ChessPosition currentPosition){
         if(playingBoard.getPiece(lastPosition).getTeamColor()==TeamColor.WHITE){
-            if(lastPosition.getRow()==4 && (currentPosition.getColumn()==lastPosition.getColumn()-1 || currentPosition.getColumn()==lastPosition.getColumn()+1)){
+            boolean whiteFirstCheck = (lastPosition.getRow()==4 && (currentPosition.getColumn()==lastPosition.getColumn()-1));
+            boolean whiteSecondCheck = (currentPosition.getColumn()==lastPosition.getColumn()+1);
+            if( whiteFirstCheck || whiteSecondCheck){
                 return true;
             }
         } else {
-            if(lastPosition.getRow()==5 && (currentPosition.getColumn()==lastPosition.getColumn()-1 || currentPosition.getColumn()==lastPosition.getColumn()+1)){
+            boolean blackFirstCheck = (lastPosition.getRow()==5 && (currentPosition.getColumn()==lastPosition.getColumn()-1));
+            boolean blackSecondCheck = (currentPosition.getColumn()==lastPosition.getColumn()+1);
+            if(blackFirstCheck || blackSecondCheck){
                 return true;
             }
         }

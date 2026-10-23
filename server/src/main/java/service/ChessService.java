@@ -88,16 +88,16 @@ public class ChessService {
         }
     }
 
-    public void joinGame(String authToken, GameData gameData, String playerColor) throws AlreadyTakenException, BadRequestException, UnauthorizedUserException{
+    public void joinGame(String authToken, GameData game, String color) throws AlreadyTakenException, BadRequestException, UnauthorizedUserException{
         try{
-            checkJoinGameInputs(authToken, gameData, playerColor);
-            playerColor = identifyPlayerColor(playerColor);
+            checkJoinGameInputs(authToken, game, color);
+            color = identifyPlayerColor(color);
 
             AuthData authData = authDataAccess.getAuthData(authToken);
 
             if(authData!=null){
-                checkIfPlayerTaken(playerColor, gameData);
-                addNewPlayer(playerColor, gameData.gameID(), authToken);
+                checkIfPlayerTaken(color, game);
+                addNewPlayer(color, game.gameID(), authToken);
             } else {
                 throw new UnauthorizedUserException("");
             }
