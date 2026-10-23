@@ -1,8 +1,6 @@
 package passoff.server;
 
-import dataaccess.MemoryAuthDataAccess;
-import dataaccess.MemoryGameDataAccess;
-import dataaccess.MemoryUserDataAccess;
+import dataaccess.*;
 import org.junit.jupiter.api.*;
 import model.*;
 import service.ChessService;
@@ -26,54 +24,143 @@ public class TestEndPoints {
 
     @Test
     public void testRegisterNewUserSuccess(){
-
-    }
-
-    @Test
-    public void testRegisterExistingFailure(){
-
-    }
- /*
-    @Test
-    @Order(1)
-    public void testClear(){
         try {
-            service.registerUser(user1);
-            service.registerUser(user2);
-            service.registerUser(user3);
-            service.registerUser(user4);
-            service.registerUser(user5);
-            service.registerUser(user6);
-
-            //remove register user, and just shove users into user data when instantiating :)
-
-            ArrayList<UserData> userDataList = service.getUserDataAccess().getUserDataList();
-            assertNotNull(userDataList);
-
-            service.clearData();
-
-            userDataList = service.getUserDataAccess().getUserDataList();
-
-            assertEquals(new ArrayList<UserData>(), userDataList);
-        } catch (AlreadyTakenException e){
-            //assert(register user failed, test can't continue)
+            UserData newUser = new UserData("user", "pass", "email");
+            UserData newUser2 = new UserData("user2", "pass2", "email2");
+            AuthData authData1 = service.registerUser(newUser);
+            AuthData authData2 = service.registerUser(newUser2);
+            UserDataAccess userDAO = service.getUserDataAccess();
+            assertEquals(userDAO.getUser(newUser),newUser);
+            assertEquals(userDAO.getUser(newUser2),newUser2);
+        } catch (AlreadyTakenException ex){
+            fail();
         }
     }
 
     @Test
-    @Order(3)
-    public void registerNewUserSuccess() throws AlreadyTakenException{
-        AuthData authData = service.registerUser(user1);
-        assertEquals("ExistingUser", authData.username());
+    public void testRegisterExistingFailure(){
+        try {
+            UserData newUser = new UserData("user", "pass", "email");
+            AuthData authData1 = service.registerUser(newUser);
+            AuthData authData2 = service.registerUser(newUser);
+            fail();
+
+        } catch (AlreadyTakenException ex){
+            testClearSuccess();
+        }
     }
 
     @Test
-    @Order(4)
-    public void registerNewUserFailure() throws AlreadyTakenException {
-        AuthData authData1 = service.registerUser(user2);
+    public void testlogInNewUserSuccess(){
+        try {
+            UserData newUser1 = new UserData("user", "pass", "email");
+            UserData newUser2 = new UserData("user2", "pass2", "email2");
+            AuthData authData1 = service.registerUser(newUser1);
+            AuthData authData2 = service.registerUser(newUser2);
 
+            service.logOut(authData1.authToken());
+            service.logOut(authData2.authToken());
 
+            authData1 = service.logIn(newUser1);
+            authData2 = service.logIn(newUser2);
+
+            AuthDataAccess authDataAccess = service.getAuthDataAccess();
+            UserDataAccess userDataAccess = service.getUserDataAccess();
+
+            assertEquals(authData1, authDataAccess.getAuthData(authData1.authToken()));
+            assertEquals(authData2, authDataAccess.getAuthData(authData2.authToken()));
+            assertEquals(2, userDataAccess.getUserDataList().size());
+
+        } catch (BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
+            fail();
+        }
     }
 
-  */
+    @Test
+    public void testlogInBadRequestFailure(){
+        try {
+            UserData newUser1 = new UserData("user", "pass", "email");
+            UserData newUser2 = new UserData("user2", "pass2", "email2");
+            UserData newUser3 = new UserData(null, "pass2", null);
+            AuthData authData1 = service.registerUser(newUser1);
+            AuthData authData2 = service.registerUser(newUser2);
+
+            service.logOut(authData1.authToken());
+            service.logOut(authData2.authToken());
+
+            authData1 = service.logIn(newUser3);
+
+            fail();
+
+        } catch (AlreadyTakenException | UnauthorizedUserException ex){
+            fail();
+        } catch (BadRequestException ex){
+            testClearSuccess();
+        }
+    }
+
+    @Test
+    public void testlogInUnauthorizedFailure(){
+        try {
+            UserData newUser1 = new UserData("user", "pass", "email");
+            UserData newUser2 = new UserData("user2", "pass2", "email2");
+            UserData newUser3 = new UserData("user2", "pass", null);
+
+            AuthData authData1 = service.registerUser(newUser1);
+            AuthData authData2 = service.registerUser(newUser2);
+
+            service.logOut(authData1.authToken());
+            service.logOut(authData2.authToken());
+
+            authData1 = service.logIn(newUser3);
+
+            fail();
+
+        } catch (BadRequestException | AlreadyTakenException ex){
+            fail();
+        } catch (UnauthorizedUserException ex){
+            testClearSuccess();
+        }
+    }
+
+
+    @Test
+    public void testlogOutNewUserSuccess(){
+        try {
+            UserData newUser = new UserData("user", "pass", "email");
+            UserData newUser2 = new UserData("user2", "pass2", "email2");
+            AuthData authData1 = service.registerUser(newUser);
+            AuthData authData2 = service.registerUser(newUser2);
+            service.logOut(authData1.authToken());
+            service.logOut(authData2.authToken());
+
+            AuthDataAccess authDataAccess = service.getAuthDataAccess();
+            UserDataAccess userDataAccess = service.getUserDataAccess();
+
+            assertEquals(new ArrayList<AuthData>(), authDataAccess.getAuthDataList());
+            assertEquals(2, userDataAccess.getUserDataList().size());
+
+        } catch (AlreadyTakenException | UnauthorizedUserException ex){
+            fail();
+        }
+    }
+
+    @Test
+    public void testlogOutFailure(){
+        try {
+            UserData newUser = new UserData("user", "pass", "email");
+            UserData newUser2 = new UserData("user2", "pass2", "email2");
+            AuthData authData1 = service.registerUser(newUser);
+            AuthData authData2 = service.registerUser(newUser2);
+            service.logOut("happy");
+            service.logOut("goofy");
+
+            fail();
+
+        } catch (AlreadyTakenException ex){
+            fail();
+        } catch (UnauthorizedUserException ex){
+            testClearSuccess();
+        }
+    }
 }

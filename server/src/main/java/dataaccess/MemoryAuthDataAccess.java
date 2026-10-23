@@ -34,6 +34,11 @@ public class MemoryAuthDataAccess implements AuthDataAccess{
         authDataList.remove(authData);
     }
 
+    @Override
+    public ArrayList<AuthData> getAuthDataList() {
+        return authDataList;
+    }
+
     private String createToken(){
         return UUID.randomUUID().toString();
     }
