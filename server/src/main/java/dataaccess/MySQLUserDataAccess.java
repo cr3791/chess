@@ -1,6 +1,8 @@
 package dataaccess;
 
 import model.UserData;
+
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.sql.*;
 
@@ -12,8 +14,15 @@ public class MySQLUserDataAccess implements UserDataAccess{
     }
 
     @Override
-    public void clearUserData() {
-        userDataList.clear();
+    public void clearUserData() throws DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "DROP TABLE userData";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database");
+        }
     }
 
     @Override

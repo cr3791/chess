@@ -16,9 +16,13 @@ public class ChessService {
     }
 
     public void clearData(){
-        userDataAccess.clearUserData();
-        gameDataAccess.clearGameData();
-        authDataAccess.clearAuthData();
+        try {
+            userDataAccess.clearUserData();
+            gameDataAccess.clearGameData();
+            authDataAccess.clearAuthData();
+        } catch (DataAccessException ex){
+            throw new RuntimeException("unable to access database");
+        }
     }
 
     public AuthData registerUser(UserData userData) throws AlreadyTakenException, BadRequestException {

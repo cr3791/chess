@@ -3,7 +3,7 @@ import model.UserData;
 import java.util.ArrayList;
 
 public interface UserDataAccess {
-    void clearUserData();
+    void clearUserData() throws DataAccessException;
     void addUser(UserData userData);
     UserData getUser(UserData userData);
     ArrayList<UserData> getUserDataList();
