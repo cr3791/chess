@@ -15,13 +15,12 @@ public class Server {
     private final ChessService service;
     private final Javalin javalin;
 
-    public Server(){
-        this(new ChessService(new MemoryUserDataAccess(), new MemoryGameDataAccess(), new MemoryAuthDataAccess()));
-    }
-
-    public Server(ChessService service) {
-        this.service = service;
-
+    public Server() {
+        try {
+            service = new ChessService(new MySQLUserDataAccess(), new MySQLGameDataAccess(), new MySQLAuthDataAccess());
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Couldn't make Service");
+        }
         // Register your endpoints and exception handlers here.
         javalin = Javalin.create(config -> config.staticFiles.add("web"))
                 .delete("/db", this::clearData)
