@@ -3,6 +3,9 @@ package dataaccess;
 import chess.ChessGame;
 import model.GameData;
 
+import javax.xml.crypto.Data;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,9 +13,19 @@ public class MySQLGameDataAccess implements GameDataAccess{
     private final ArrayList<GameData> gameDataList = new ArrayList<>();
     private final AtomicInteger gameIDGenerator = new AtomicInteger(10000);
 
+    public MySQLGameDataAccess() throws DataAccessException{
+        configureDatabase();
+    }
     @Override
-    public void clearGameData() {
-        gameDataList.clear();
+    public void clearGameData() throws DataAccessException {
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "DROP TABLE gameData";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database");
+        }
     }
 
     @Override
@@ -61,5 +74,29 @@ public class MySQLGameDataAccess implements GameDataAccess{
 
     private int generateGameID(){
         return gameIDGenerator.getAndIncrement();
+    }
+
+    private String createGameDataString(){
+        return """
+                CREATE TABLE IF NOT EXISTS gameData(
+                    `gameID` INT NOT NULL,
+                    `whiteUsername` VARCHAR(255),
+                    `blackUsername` VARCHAR(255),
+                    `gameName` VARCHAR(255) NOT NULL,
+                    `game` BLOB,
+                    PRIMARY KEY (`gameID`)
+                )
+                """;
+    }
+
+    private void configureDatabase() throws DataAccessException{
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(createGameDataString())){
+                preparedStatement.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException ex){
+            throw new DataAccessException("");
+        }
     }
 }

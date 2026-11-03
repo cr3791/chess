@@ -3,7 +3,7 @@ import model.*;
 import java.util.ArrayList;
 
 public interface GameDataAccess {
-    void clearGameData();
+    void clearGameData() throws DataAccessException;
     int createGame(String gameName);
     ArrayList<GameData> getGameList();
     GameData getGame(int gameID);
