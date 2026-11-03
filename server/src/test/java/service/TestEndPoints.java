@@ -66,7 +66,7 @@ public class TestEndPoints {
 
         } catch (AlreadyTakenException ex){
             assertTrue(true);
-        } catch (BadRequestException ex){
+        } catch (DataAccessException | BadRequestException ex){
             fail();
         }
     }
@@ -78,7 +78,7 @@ public class TestEndPoints {
             service.registerUser(new UserData(null, "yay", null));
             fail();
 
-        } catch (AlreadyTakenException ex){
+        } catch (DataAccessException | AlreadyTakenException ex){
             fail();
         } catch (BadRequestException ex){
             assertTrue(true);
@@ -123,7 +123,7 @@ public class TestEndPoints {
 
             fail();
 
-        } catch (AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (DataAccessException | AlreadyTakenException | UnauthorizedUserException ex){
             fail();
         } catch (BadRequestException ex){
             assertTrue(true);
@@ -144,7 +144,7 @@ public class TestEndPoints {
 
             fail();
 
-        } catch (BadRequestException | AlreadyTakenException ex){
+        } catch (DataAccessException | BadRequestException | AlreadyTakenException ex){
             fail();
         } catch (UnauthorizedUserException ex){
             assertTrue(true);
@@ -181,7 +181,7 @@ public class TestEndPoints {
 
             fail();
 
-        } catch (AlreadyTakenException | BadRequestException ex){
+        } catch (DataAccessException | AlreadyTakenException | BadRequestException ex){
             fail();
         } catch (UnauthorizedUserException ex){
             assertTrue(true);
@@ -217,7 +217,7 @@ public class TestEndPoints {
 
             fail();
 
-        } catch (BadRequestException | AlreadyTakenException ex){
+        } catch (DataAccessException | BadRequestException | AlreadyTakenException ex){
             fail();
         } catch (UnauthorizedUserException ex){
             assertTrue(true);
@@ -236,7 +236,7 @@ public class TestEndPoints {
 
             assertEquals(2, gameList.size());
 
-        } catch (BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (DataAccessException | BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
             fail();
         }
     }
@@ -255,7 +255,7 @@ public class TestEndPoints {
             for(GameData game : gameList){
                 assertEquals(new GameData(gameID, newUser1.username(),null,"Party party",new ChessGame()), game);
             }
-        } catch (BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (DataAccessException | BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
             fail();
         }
     }
@@ -274,7 +274,7 @@ public class TestEndPoints {
             for(GameData game : gameList){
                 assertEquals(new GameData(gameID, null,newUser1.username(),"Party party",new ChessGame()), game);
             }
-        } catch (BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (DataAccessException | BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
             fail();
         }
     }
@@ -291,7 +291,7 @@ public class TestEndPoints {
             service.joinGame(null, gameData, "BLACK");
             fail();
 
-        } catch (UnauthorizedUserException | AlreadyTakenException ex){
+        } catch (DataAccessException | UnauthorizedUserException | AlreadyTakenException ex){
             fail();
         } catch (BadRequestException ex){
             assertTrue(true);
@@ -310,7 +310,7 @@ public class TestEndPoints {
             service.joinGame("ladeeda", gameData, "BLACK");
             fail();
 
-        } catch (BadRequestException | AlreadyTakenException ex){
+        } catch (DataAccessException | BadRequestException | AlreadyTakenException ex){
             fail();
         } catch (UnauthorizedUserException ex){
             assertTrue(true);
@@ -329,7 +329,7 @@ public class TestEndPoints {
             service.joinGame(authData.authToken(), gameData, "BLACK");
             fail();
 
-        } catch (BadRequestException | UnauthorizedUserException ex){
+        } catch (DataAccessException | BadRequestException | UnauthorizedUserException ex){
             fail();
         } catch (AlreadyTakenException ex){
             assertTrue(true);

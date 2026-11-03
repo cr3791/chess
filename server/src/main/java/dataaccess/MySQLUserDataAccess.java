@@ -47,7 +47,10 @@ public class MySQLUserDataAccess implements UserDataAccess{
                 ps.setString(1,userData.username());
                 var rs = ps.executeQuery();
                 if (rs.next()){
-                    return new UserData(rs.getString("username"),rs.getString("password"),rs.getString("email"));
+                    String username = rs.getString("username");
+                    String password = rs.getString("password");
+                    String email = rs.getString("email");
+                    return new UserData(username,password,email);
                 } else {
                     return null;
                 }
@@ -59,7 +62,7 @@ public class MySQLUserDataAccess implements UserDataAccess{
 
     @Override
     public ArrayList<UserData> getUserDataList() throws DataAccessException{
-        ArrayList<UserData> userList= new ArrayList<UserData>();
+        ArrayList<UserData> userList= new ArrayList<>();
         try(Connection conn = DatabaseManager.getConnection()){
             var statement = "SELECT username, password, email FROM userData";
             try(var ps = conn.prepareStatement(statement)){

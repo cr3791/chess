@@ -16,17 +16,17 @@ public class ChessService {
         this.authDataAccess = authDataAccess;
     }
 
-    public void clearData(){
+    public void clearData() throws DataAccessException {
         try {
             userDataAccess.clearUserData();
             gameDataAccess.clearGameData();
             authDataAccess.clearAuthData();
         } catch (DataAccessException ex){
-            throw new RuntimeException("unable to access database from clear");
+            throw new DataAccessException("unable to access database from clear");
         }
     }
 
-    public AuthData registerUser(UserData userData) throws AlreadyTakenException, BadRequestException {
+    public AuthData registerUser(UserData userData) throws AlreadyTakenException, BadRequestException, DataAccessException {
         try {
             checkRegisterInputs(userData);
             if (userDataAccess.getUser(userData) == null) {
@@ -38,11 +38,11 @@ public class ChessService {
         } catch (BadRequestException ex){
             throw new BadRequestException("");
         } catch (DataAccessException ex){
-            throw new RuntimeException("unable to access database from Register User");
+            throw new DataAccessException("unable to access database from Register User");
         }
     }
 
-    public AuthData logIn(UserData userData) throws UnauthorizedUserException, BadRequestException{
+    public AuthData logIn(UserData userData) throws UnauthorizedUserException, BadRequestException, DataAccessException{
         try {
             checkLogInInputs(userData);
             UserData storedUser = userDataAccess.getUser(userData);
@@ -58,25 +58,24 @@ public class ChessService {
         } catch (BadRequestException ex){
             throw new BadRequestException("Bad Request");
         } catch (DataAccessException ex){
-            throw new RuntimeException("Can't access database from logIn");
+            throw new DataAccessException("Can't access database from logIn");
         }
     }
 
-    public void logOut(String authToken) throws UnauthorizedUserException{
+    public void logOut(String authToken) throws UnauthorizedUserException, DataAccessException{
         try {
             AuthData authData = authDataAccess.getAuthData(authToken);
-
             if (authData != null) {
                 authDataAccess.removeAuthData(authData);
             } else {
                 throw new UnauthorizedUserException("");
             }
         } catch (DataAccessException ex){
-            throw new RuntimeException("Could not access database from logOut");
+            throw new DataAccessException("Could not access database from logOut");
         }
     }
 
-    public ArrayList<GameData> listGames(String authToken) throws UnauthorizedUserException{
+    public ArrayList<GameData> listGames(String authToken) throws UnauthorizedUserException, DataAccessException {
         try {
             AuthData authData = authDataAccess.getAuthData(authToken);
             if (authData != null) {
@@ -85,11 +84,11 @@ public class ChessService {
                 throw new UnauthorizedUserException("");
             }
         } catch (DataAccessException ex){
-            throw new RuntimeException("Could not access database from listGames");
+            throw new DataAccessException("Could not access database from listGames");
         }
     }
 
-    public int createGame(String authToken, String gameName) throws BadRequestException, UnauthorizedUserException{
+    public int createGame(String authToken, String gameName) throws BadRequestException, UnauthorizedUserException, DataAccessException {
         try{
             checkCreateGameInputs(authToken, gameName);
             AuthData authData = authDataAccess.getAuthData(authToken);
@@ -102,11 +101,11 @@ public class ChessService {
         } catch (BadRequestException ex){
             throw new BadRequestException("");
         } catch (DataAccessException ex){
-            throw new RuntimeException("Unable to access Database at createGame");
+            throw new DataAccessException("Unable to access Database at createGame");
         }
     }
 
-    public void joinGame(String authToken, GameData game, String color) throws AlreadyTakenException, BadRequestException, UnauthorizedUserException{
+    public void joinGame(String authToken, GameData game, String color) throws AlreadyTakenException, BadRequestException, UnauthorizedUserException, DataAccessException {
         try{
             checkJoinGameInputs(authToken, game, color);
             color = identifyPlayerColor(color);
@@ -124,7 +123,7 @@ public class ChessService {
         } catch (AlreadyTakenException ex){
             throw new AlreadyTakenException("");
         } catch (DataAccessException ex){
-            throw new RuntimeException("Could not access the database from joinGame");
+            throw new DataAccessException("Could not access the database from joinGame");
         }
     }
 

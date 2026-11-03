@@ -42,7 +42,13 @@ public class Server {
     }
 
     private void clearData(Context ctx){
-        service.clearData();
+        try {
+            service.clearData();
+        } catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
+            ctx.result(error);
+        }
     }
 
     private void registerUser(Context ctx){
@@ -57,6 +63,10 @@ public class Server {
         } catch (BadRequestException ex){
             ctx.status(400);
             String error = new Gson().toJson(Map.of("message", "Error: bad request"));
+            ctx.result(error);
+        }  catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
             ctx.result(error);
         }
     }
@@ -74,6 +84,10 @@ public class Server {
             ctx.status(401);
             String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
             ctx.result(error);
+        }  catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
+            ctx.result(error);
         }
     }
 
@@ -84,6 +98,10 @@ public class Server {
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
             String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
+        }  catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
             ctx.result(error);
         }
     }
@@ -96,6 +114,10 @@ public class Server {
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
             String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
+        }  catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
             ctx.result(error);
         }
     }
@@ -115,6 +137,10 @@ public class Server {
         } catch (UnauthorizedUserException ex){
             ctx.status(401);
             String error = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            ctx.result(error);
+        }  catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
             ctx.result(error);
         }
     }
@@ -138,6 +164,10 @@ public class Server {
         } catch (AlreadyTakenException ex){
             ctx.status(403);
             String error = new Gson().toJson(Map.of("message", "Error: already taken"));
+            ctx.result(error);
+        } catch (DataAccessException ex){
+            ctx.status(500);
+            String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
             ctx.result(error);
         }
     }

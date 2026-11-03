@@ -1,10 +1,6 @@
 package dataaccess;
 
-import chess.ChessGame;
-import com.google.gson.Gson;
 import model.AuthData;
-import model.GameData;
-import model.UserData;
 
 import javax.xml.crypto.Data;
 import java.sql.Connection;
@@ -13,7 +9,6 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MySQLAuthDataAccess implements AuthDataAccess {
-    private final ArrayList<AuthData> authDataList = new ArrayList<>();
 
     public MySQLAuthDataAccess() throws DataAccessException{
         configureDatabase();
@@ -106,9 +101,7 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
         return """
                 CREATE TABLE IF NOT EXISTS authData(
                     `username` VARCHAR(255) NOT NULL,
-                    `authToken` VARCHAR(255) NOT NULL,
-                    PRIMARY KEY(`username`),
-                    KEY(`authToken`)
+                    `authToken` VARCHAR(255) NOT NULL PRIMARY KEY
                 )
                 """;
     }
