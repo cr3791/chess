@@ -40,6 +40,17 @@ public class MemoryGameDataAccess implements GameDataAccess{
 
     @Override
     public void addWhitePlayer(String username, int gameID) {
+
+    }
+
+    @Override
+    public void addBlackPlayer(String username, int gameID) {
+
+    }
+
+    /*
+    @Override
+    public void addWhitePlayer(String username, int gameID) {
         for(GameData game : gameDataList){
             if (game.gameID() == gameID){
                 gameDataList.remove(game);
@@ -47,7 +58,9 @@ public class MemoryGameDataAccess implements GameDataAccess{
             }
         }
     }
+     */
 
+    /*
     @Override
     public void addBlackPlayer(String username, int gameID) {
         for(GameData game : gameDataList){
@@ -57,6 +70,7 @@ public class MemoryGameDataAccess implements GameDataAccess{
             }
         }
     }
+     */
 
     private int generateGameID(){
         return gameIDGenerator.getAndIncrement();

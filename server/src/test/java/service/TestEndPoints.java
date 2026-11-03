@@ -17,7 +17,12 @@ public class TestEndPoints {
 
     @BeforeEach
     public void setUp(){
-        service = new ChessService(new MemoryUserDataAccess(), new MemoryGameDataAccess(), new MemoryAuthDataAccess());
+        try {
+            service = new ChessService(new MySQLUserDataAccess(), new MySQLGameDataAccess(), new MySQLAuthDataAccess());
+            service.clearData();
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Couldn't access database from setUP");
+        }
     }
 
     @Test
@@ -197,7 +202,7 @@ public class TestEndPoints {
 
             assertEquals(2, gameList.size());
 
-        } catch (BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (BadRequestException | AlreadyTakenException | DataAccessException | UnauthorizedUserException ex){
             fail();
         }
     }

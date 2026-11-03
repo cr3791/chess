@@ -2,6 +2,7 @@ package service;
 import dataaccess.*;
 import model.*;
 
+import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 
 public class ChessService {
@@ -73,11 +74,14 @@ public class ChessService {
 
     public ArrayList<GameData> listGames(String authToken) throws UnauthorizedUserException{
         AuthData authData = authDataAccess.getAuthData(authToken);
-
-        if(authData!=null){
-            return gameDataAccess.getGameList();
-        } else {
-            throw new UnauthorizedUserException("");
+        try {
+            if (authData != null) {
+                return gameDataAccess.getGameList();
+            } else {
+                throw new UnauthorizedUserException("");
+            }
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Database inaccessible from listGames");
         }
     }
 
@@ -93,6 +97,8 @@ public class ChessService {
             }
         } catch (BadRequestException ex){
             throw new BadRequestException("");
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Unable to access Database at createGame");
         }
     }
 
@@ -159,26 +165,34 @@ public class ChessService {
     }
 
     private void checkIfPlayerTaken(String playerColor, GameData gameData) throws AlreadyTakenException, BadRequestException {
-        GameData game = gameDataAccess.getGame(gameData.gameID());
+        try {
+            GameData game = gameDataAccess.getGame(gameData.gameID());
 
-        if(game == null){
-            throw new BadRequestException("Game doesn't exist");
-        }
+            if (game == null) {
+                throw new BadRequestException("Game doesn't exist");
+            }
 
-        if(playerColor.equals("white") && game.whiteUsername() != null){
-            throw new AlreadyTakenException("");
-        } else if (playerColor.equals("black") && game.blackUsername() != null){
-            throw new AlreadyTakenException("");
+            if (playerColor.equals("white") && game.whiteUsername() != null) {
+                throw new AlreadyTakenException("");
+            } else if (playerColor.equals("black") && game.blackUsername() != null) {
+                throw new AlreadyTakenException("");
+            }
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Couldn't access database at checkIfPlayerTaken");
         }
     }
 
     private void addNewPlayer(String playerColor, int gameID, String authToken){
-        String username = authDataAccess.getAuthData(authToken).username();
+        try {
+            String username = authDataAccess.getAuthData(authToken).username();
 
-        if(playerColor.equals("white")){
-            gameDataAccess.addWhitePlayer(username, gameID);
-        } else if (playerColor.equals("black")){
-            gameDataAccess.addBlackPlayer(username, gameID);
+            if (playerColor.equals("white")) {
+                gameDataAccess.addWhitePlayer(username, gameID);
+            } else if (playerColor.equals("black")) {
+                gameDataAccess.addBlackPlayer(username, gameID);
+            }
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Couldn't access the database at addNewPlayer");
         }
     }
 
