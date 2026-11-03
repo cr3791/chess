@@ -23,6 +23,7 @@ public class MySQLUserDataAccess implements UserDataAccess{
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
         }
+        userDataList.clear();
     }
 
     @Override

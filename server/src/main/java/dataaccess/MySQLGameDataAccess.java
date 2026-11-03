@@ -26,6 +26,7 @@ public class MySQLGameDataAccess implements GameDataAccess{
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
         }
+        gameDataList.clear();
     }
 
     @Override

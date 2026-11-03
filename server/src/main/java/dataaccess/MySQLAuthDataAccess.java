@@ -23,6 +23,7 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
         }
+        authDataList.clear();
     }
 
     @Override
@@ -59,11 +60,11 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
 
     private String createAuthDataString(){
         return """
-                CREATE TABLE IF NOT EXISTS gameData(
+                CREATE TABLE IF NOT EXISTS authData(
                     `username` VARCHAR(255) NOT NULL,
                     `authToken` VARCHAR(255) NOT NULL,
                     PRIMARY KEY(`username`),
-                    PRIMARY KEY(`authToken`)
+                    KEY(`authToken`)
                 )
                 """;
     }
