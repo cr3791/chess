@@ -2,14 +2,27 @@ package dataaccess;
 
 import model.AuthData;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
 public class MySQLAuthDataAccess implements AuthDataAccess {
     private final ArrayList<AuthData> authDataList = new ArrayList<>();
 
-    public void clearAuthData(){
-        authDataList.clear();
+    public MySQLAuthDataAccess() throws DataAccessException{
+        configureDatabase();
+    }
+
+    public void clearAuthData() throws DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "DROP TABLE authData";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database");
+        }
     }
 
     @Override
@@ -42,5 +55,27 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
 
     private String createToken(){
         return UUID.randomUUID().toString();
+    }
+
+    private String createAuthDataString(){
+        return """
+                CREATE TABLE IF NOT EXISTS gameData(
+                    `username` VARCHAR(255) NOT NULL,
+                    `authToken` VARCHAR(255) NOT NULL,
+                    PRIMARY KEY(`username`),
+                    PRIMARY KEY(`authToken`)
+                )
+                """;
+    }
+
+    private void configureDatabase() throws DataAccessException{
+        DatabaseManager.createDatabase();
+        try (Connection conn = DatabaseManager.getConnection()){
+            try (var preparedStatement = conn.prepareStatement(createAuthDataString())){
+                preparedStatement.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException ex){
+            throw new DataAccessException("");
+        }
     }
 }

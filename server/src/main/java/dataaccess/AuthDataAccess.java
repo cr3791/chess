@@ -4,7 +4,7 @@ import model.*;
 import java.util.ArrayList;
 
 public interface AuthDataAccess {
-    void clearAuthData();
+    void clearAuthData() throws DataAccessException;
     AuthData addAuthData(String username);
     AuthData getAuthData(String authToken);
     void removeAuthData(AuthData authData);
