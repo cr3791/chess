@@ -16,23 +16,49 @@ public class MySQLUserDataAccess implements UserDataAccess{
     @Override
     public void clearUserData() throws DataAccessException {
         try(Connection conn = DatabaseManager.getConnection()){
-            var statement = "DROP TABLE userData";
+            var statement = "TRUNCATE TABLE userData";
             try(var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
+                userDataList.clear();
             }
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
         }
-        userDataList.clear();
     }
 
     @Override
-    public void addUser(UserData userData) {
-        userDataList.add(userData);
+    public void addUser(UserData userData) throws DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "INSERT INTO userData (username, password, email) VALUES (?,?,?)";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,userData.username());
+                ps.setString(2,userData.password());
+                ps.setString(3,userData.email());
+                ps.executeUpdate();
+                userDataList.add(userData);
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database from addUser");
+        }
     }
 
     @Override
-    public UserData getUser(UserData userData){
+    public UserData getUser(UserData userData) throws DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "SELECT username, password, email FROM userData WHERE username = ? AND password = ? AND email = ?";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,userData.username());
+                ps.setString(2,userData.password());
+                ps.setString(3,userData.email());
+                ps.executeUpdate();
+                return getUserFromList(userData);
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database from addUser");
+        }
+    }
+
+    public UserData getUserFromList(UserData userData){
         for (UserData user : userDataList){
             if (user.username().equals(userData.username())){
                 return user;

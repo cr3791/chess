@@ -21,7 +21,7 @@ public class ChessService {
             gameDataAccess.clearGameData();
             authDataAccess.clearAuthData();
         } catch (DataAccessException ex){
-            throw new RuntimeException("unable to access database");
+            throw new RuntimeException("unable to access database from clear");
         }
     }
 
@@ -36,6 +36,8 @@ public class ChessService {
             }
         } catch (BadRequestException ex){
             throw new BadRequestException("");
+        } catch (DataAccessException ex){
+            throw new RuntimeException("unable to access database from Register User");
         }
     }
 

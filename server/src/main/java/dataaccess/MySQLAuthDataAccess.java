@@ -16,14 +16,14 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
 
     public void clearAuthData() throws DataAccessException{
         try(Connection conn = DatabaseManager.getConnection()){
-            var statement = "DROP TABLE authData";
+            var statement = "TRUNCATE TABLE authData";
             try(var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
+                authDataList.clear();
             }
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
         }
-        authDataList.clear();
     }
 
     @Override

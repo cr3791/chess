@@ -19,14 +19,15 @@ public class MySQLGameDataAccess implements GameDataAccess{
     @Override
     public void clearGameData() throws DataAccessException {
         try(Connection conn = DatabaseManager.getConnection()){
-            var statement = "DROP TABLE gameData";
+            var statement = "TRUNCATE TABLE gameData";
             try(var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
+                gameDataList.clear();
             }
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
         }
-        gameDataList.clear();
+
     }
 
     @Override
