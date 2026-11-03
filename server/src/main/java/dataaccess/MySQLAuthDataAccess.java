@@ -1,7 +1,12 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
+import model.UserData;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,7 +24,6 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
             var statement = "TRUNCATE TABLE authData";
             try(var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
-                authDataList.clear();
             }
         } catch (SQLException ex){
             throw new DataAccessException("Couldn't access the database");
@@ -27,31 +31,71 @@ public class MySQLAuthDataAccess implements AuthDataAccess {
     }
 
     @Override
-    public AuthData addAuthData(String username) {
-        String authToken = createToken();
-        AuthData authData = new AuthData(username, authToken);
-        authDataList.add(authData);
-        return authData;
-    }
-
-    @Override
-    public AuthData getAuthData(String authToken){
-        for(AuthData authData : authDataList){
-            if (authData.authToken().equals(authToken)){
-                return authData;
+    public AuthData addAuthData(String username) throws DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            String authToken = createToken();
+            var statement = "INSERT INTO authData (username, authToken) VALUES (?,?)";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,username);
+                ps.setString(2,authToken);
+                ps.executeUpdate();
+                return new AuthData(username, authToken);
             }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database from addAuth");
         }
-        return null;
     }
 
     @Override
-    public void removeAuthData(AuthData authData) {
-        authDataList.remove(authData);
+    public AuthData getAuthData(String authToken) throws DataAccessException{
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "SELECT username, authToken FROM authData WHERE authToken = ?";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,authToken);
+                var rs = ps.executeQuery();
+                if (rs.next()){
+                    return new AuthData(rs.getString("username"),rs.getString("authToken"));
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database from getAuthData");
+        }
     }
 
     @Override
-    public ArrayList<AuthData> getAuthDataList() {
-        return authDataList;
+    public void removeAuthData(AuthData authData) throws DataAccessException {
+        String authToken = authData.authToken();
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "DELETE FROM authData WHERE authToken = ?";
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,authToken);
+                ps.executeUpdate();
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database from removeAuthData");
+        }
+    }
+
+    @Override
+    public ArrayList<AuthData> getAuthDataList() throws DataAccessException {
+        ArrayList<AuthData> authList= new ArrayList<>();
+        try(Connection conn = DatabaseManager.getConnection()){
+            var statement = "SELECT username, authToken FROM authData";
+            try(var ps = conn.prepareStatement(statement)){
+                var rs = ps.executeQuery();
+
+                while(rs.next()){
+                    String username = rs.getString("username");
+                    String authToken = rs.getString("authToken");
+                    authList.add(new AuthData(username, authToken));
+                }
+                return authList;
+            }
+        } catch (SQLException ex){
+            throw new DataAccessException("Couldn't access the database from authList");
+        }
     }
 
     private String createToken(){

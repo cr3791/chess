@@ -63,25 +63,29 @@ public class ChessService {
     }
 
     public void logOut(String authToken) throws UnauthorizedUserException{
-        AuthData authData = authDataAccess.getAuthData(authToken);
+        try {
+            AuthData authData = authDataAccess.getAuthData(authToken);
 
-        if(authData!=null){
-            authDataAccess.removeAuthData(authData);
-        } else {
-            throw new UnauthorizedUserException("");
+            if (authData != null) {
+                authDataAccess.removeAuthData(authData);
+            } else {
+                throw new UnauthorizedUserException("");
+            }
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Could not access database from logOut");
         }
     }
 
     public ArrayList<GameData> listGames(String authToken) throws UnauthorizedUserException{
-        AuthData authData = authDataAccess.getAuthData(authToken);
         try {
+            AuthData authData = authDataAccess.getAuthData(authToken);
             if (authData != null) {
                 return gameDataAccess.getGameList();
             } else {
                 throw new UnauthorizedUserException("");
             }
         } catch (DataAccessException ex){
-            throw new RuntimeException("Database inaccessible from listGames");
+            throw new RuntimeException("Could not access database from listGames");
         }
     }
 
@@ -119,6 +123,8 @@ public class ChessService {
             throw new BadRequestException("");
         } catch (AlreadyTakenException ex){
             throw new AlreadyTakenException("");
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Could not access the database from joinGame");
         }
     }
 
