@@ -56,6 +56,8 @@ public class ChessService {
             throw new UnauthorizedUserException("Unauthorized User");
         } catch (BadRequestException ex){
             throw new BadRequestException("Bad Request");
+        } catch (DataAccessException ex){
+            throw new RuntimeException("Can't access database from logIn");
         }
     }
 

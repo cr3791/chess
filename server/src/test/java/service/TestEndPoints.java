@@ -5,6 +5,7 @@ import dataaccess.*;
 import org.junit.jupiter.api.*;
 import model.*;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ public class TestEndPoints {
             assertEquals(new ArrayList<GameData>(), service.getGameDataAccess().getGameList());
             assertEquals(new ArrayList<UserData>(), service.getUserDataAccess().getUserDataList());
 
-        } catch (AlreadyTakenException | BadRequestException | UnauthorizedUserException ex){
+        } catch (AlreadyTakenException | BadRequestException | DataAccessException | UnauthorizedUserException ex){
             fail();
         }
     }
@@ -46,7 +47,7 @@ public class TestEndPoints {
             UserDataAccess userDAO = service.getUserDataAccess();
             assertEquals(userDAO.getUser(newUser1),newUser1);
             assertEquals(userDAO.getUser(newUser2),newUser2);
-        } catch (AlreadyTakenException | BadRequestException ex){
+        } catch (AlreadyTakenException | BadRequestException | DataAccessException ex){
             fail();
         }
     }
@@ -98,7 +99,7 @@ public class TestEndPoints {
             assertEquals(authData2, authDataAccess.getAuthData(authData2.authToken()));
             assertEquals(2, userDataAccess.getUserDataList().size());
 
-        } catch (BadRequestException | AlreadyTakenException | UnauthorizedUserException ex){
+        } catch (BadRequestException | AlreadyTakenException | DataAccessException | UnauthorizedUserException ex){
             fail();
         }
     }
@@ -160,7 +161,7 @@ public class TestEndPoints {
             assertEquals(new ArrayList<AuthData>(), authDataAccess.getAuthDataList());
             assertEquals(2, userDataAccess.getUserDataList().size());
 
-        } catch (AlreadyTakenException | UnauthorizedUserException | BadRequestException ex){
+        } catch (AlreadyTakenException | UnauthorizedUserException | DataAccessException | BadRequestException ex){
             fail();
         }
     }

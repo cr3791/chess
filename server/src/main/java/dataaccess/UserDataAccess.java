@@ -6,5 +6,5 @@ public interface UserDataAccess {
     void clearUserData() throws DataAccessException;
     void addUser(UserData userData) throws DataAccessException;
     UserData getUser(UserData userData) throws DataAccessException;
-    ArrayList<UserData> getUserDataList();
+    ArrayList<UserData> getUserDataList() throws DataAccessException;
 }
