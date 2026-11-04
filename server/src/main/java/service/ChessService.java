@@ -105,7 +105,7 @@ public class ChessService {
         }
     }
 
-    public void joinGame(String authToken, GameData game, String color) throws AlreadyTakenException, BadRequestException, UnauthorizedUserException, DataAccessException {
+    public void joinGame(String authToken,GameData game,String color)throws AlreadyTakenException,BadRequestException,UnauthorizedUserException,DataAccessException{
         try{
             checkJoinGameInputs(authToken, game, color);
             color = identifyPlayerColor(color);
