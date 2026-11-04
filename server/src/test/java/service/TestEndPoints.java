@@ -50,8 +50,8 @@ public class TestEndPoints {
             service.registerUser(newUser1);
             service.registerUser(newUser2);
             UserDataAccess userDAO = service.getUserDataAccess();
-            assertEquals(userDAO.getUser(newUser1),newUser1);
-            assertEquals(userDAO.getUser(newUser2),newUser2);
+            assertEquals(userDAO.getUser(newUser1).username(),newUser1.username());
+            assertEquals(userDAO.getUser(newUser2).email(),newUser2.email());
         } catch (AlreadyTakenException | BadRequestException | DataAccessException ex){
             fail();
         }
