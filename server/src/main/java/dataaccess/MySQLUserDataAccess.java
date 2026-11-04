@@ -1,6 +1,7 @@
 package dataaccess;
 
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
@@ -29,8 +30,10 @@ public class MySQLUserDataAccess implements UserDataAccess{
         try(Connection conn = DatabaseManager.getConnection()){
             var statement = "INSERT INTO userData (username, password, email) VALUES (?,?,?)";
             try(var ps = conn.prepareStatement(statement)){
+                String password = userData.password();
+                String hashed_password = BCrypt.hashpw(password, BCrypt.gensalt());
                 ps.setString(1,userData.username());
-                ps.setString(2,userData.password());
+                ps.setString(2,hashed_password);
                 ps.setString(3,userData.email());
                 ps.executeUpdate();
             }

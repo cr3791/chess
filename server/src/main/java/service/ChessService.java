@@ -1,8 +1,8 @@
 package service;
 import dataaccess.*;
 import model.*;
+import org.mindrot.jbcrypt.BCrypt;
 
-import javax.management.RuntimeErrorException;
 import java.util.ArrayList;
 
 public class ChessService {
@@ -128,7 +128,8 @@ public class ChessService {
     }
 
     private boolean checkPassword(String storedPassword, String passwordAttempt) throws UnauthorizedUserException {
-        if(storedPassword.equals(passwordAttempt)){
+
+        if(BCrypt.checkpw(passwordAttempt,storedPassword)){
             return true;
         } else {
             throw new UnauthorizedUserException("");
