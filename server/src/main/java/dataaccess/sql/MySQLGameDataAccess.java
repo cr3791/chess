@@ -1,7 +1,9 @@
-package dataaccess;
+package dataaccess.sql;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataaccess.DataAccessException;
+import dataaccess.GameDataAccess;
 import model.GameData;
 
 import java.sql.Connection;
@@ -9,10 +11,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MySQLGameDataAccess implements GameDataAccess{
+public class MySQLGameDataAccess implements GameDataAccess {
     private final AtomicInteger gameIDGenerator = new AtomicInteger(10000);
 
-    public MySQLGameDataAccess() throws DataAccessException{
+    public MySQLGameDataAccess() throws DataAccessException {
         configureDatabase();
     }
 

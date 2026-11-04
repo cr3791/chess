@@ -1,15 +1,16 @@
-package dataaccess;
+package dataaccess.sql;
 
+import dataaccess.DataAccessException;
+import dataaccess.UserDataAccess;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.sql.*;
 
-public class MySQLUserDataAccess implements UserDataAccess{
+public class MySQLUserDataAccess implements UserDataAccess {
 
-    public MySQLUserDataAccess() throws DataAccessException{
+    public MySQLUserDataAccess() throws DataAccessException {
         configureDatabase();
     }
 

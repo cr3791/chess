@@ -1,8 +1,9 @@
-package dataaccess;
+package dataaccess.sql;
 
+import dataaccess.AuthDataAccess;
+import dataaccess.DataAccessException;
 import model.AuthData;
 
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 public class MySQLAuthDataAccess implements AuthDataAccess {
 
-    public MySQLAuthDataAccess() throws DataAccessException{
+    public MySQLAuthDataAccess() throws DataAccessException {
         configureDatabase();
     }
 
