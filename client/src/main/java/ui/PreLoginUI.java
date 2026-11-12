@@ -6,32 +6,48 @@ public class PreLoginUI {
 
     public PreLoginUI(){}
 
-    public void eval(List<String> parameters){
+    public State eval(List<String> parameters, State currentState){
+        State state = currentState;
         switch (parameters.getFirst()){
             case "help":
-                help();
+                System.out.print(help());
                 break;
             case "quit":
-                quit();
+                System.out.print(quit());
+                state.quit();
                 break;
             case "login":
                 logIn();
+                state.setLogIn();
                 break;
             case "register":
-                register();
+                System.out.println(register(parameters));
+                state.setLogIn();
                 break;
         }
+        return state;
     }
 
-    private void help(){}
+    private String help(){
+        String registerInfo = "\tregister <USERNAME> <PASSWORD> <EMAIL> - create an account";
+        String loginInfo = "\tlogin <USERNAME> <PASSWORD> - sign in as existing user";
+        String helpInfo = "\thelp - see possible commands";
+        String quitInfo = "\tquit - end program";
+        return String.format("%s\n%s\n%s\n%s\n",registerInfo,loginInfo,helpInfo,quitInfo);
+    }
 
-    private void quit(){
+    private String quit(){
+        return "Thank you for playing!\n";
     }
 
     private void logIn(){
+
     }
 
-    private void register(){
+    private String register(List<String> parameters){
+
+
+        return "";
     }
 
 }

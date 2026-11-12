@@ -22,7 +22,6 @@ public class CentralUI {
     public void run(){
         Scanner scanner = new Scanner(System.in);
         System.out.print("Welcome to 240 Chess, future Grandmaster. Type Help to get started\n\n");
-        var result = "";
 
         while(true){
             System.out.printf("{%s} >>> ",state.getState());
@@ -30,6 +29,9 @@ public class CentralUI {
 
             try{
                 eval(line);
+                if(state.isQuit()){
+                    break;
+                }
             } catch (RuntimeException ex){
                 System.out.print("You Failure");
             }
@@ -38,8 +40,7 @@ public class CentralUI {
 
     private void eval(String line){
         List<String> input = new ArrayList<>();
-        input.add(Arrays.toString(line.toLowerCase().split(" ")));
-        System.out.print(input);
+        input.addAll(Arrays.asList(line.toLowerCase().split(" ")));
         if (input.isEmpty()){
             input.addFirst("help");
         }
@@ -47,10 +48,12 @@ public class CentralUI {
             case "Logged In":
                 if(state.isGamePlay()){
 
+                } else {
+
                 }
 
             case "Logged Out":
-
+                state = preUI.eval(input, state);
         }
     }
 }
