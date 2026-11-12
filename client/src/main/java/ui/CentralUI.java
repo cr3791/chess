@@ -1,6 +1,9 @@
 package ui;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class CentralUI {
@@ -11,9 +14,9 @@ public class CentralUI {
 
     public CentralUI(){
         postUI = new PostLoginUI();
-        preUI = new PreLoginUI("");
+        preUI = new PreLoginUI();
         gpUI = new GamePlayUI();
-        state.setLogOut();
+        state = new State();
     }
 
     public void run(){
@@ -34,12 +37,20 @@ public class CentralUI {
     }
 
     private void eval(String line){
+        List<String> input = new ArrayList<>();
+        input.add(Arrays.toString(line.toLowerCase().split(" ")));
+        System.out.print(input);
+        if (input.isEmpty()){
+            input.addFirst("help");
+        }
         switch (state.getState()){
             case "Logged In":
+                if(state.isGamePlay()){
+
+                }
 
             case "Logged Out":
+
         }
     }
-
-
 }

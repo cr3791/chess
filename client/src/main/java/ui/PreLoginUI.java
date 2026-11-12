@@ -1,20 +1,37 @@
 package ui;
 
+import java.util.List;
+
 public class PreLoginUI {
-    private String line;
-    public PreLoginUI(String line){
-        this.line = line;
+
+    public PreLoginUI(){}
+
+    public void eval(List<String> parameters){
+        switch (parameters.getFirst()){
+            case "help":
+                help();
+                break;
+            case "quit":
+                quit();
+                break;
+            case "login":
+                logIn();
+                break;
+            case "register":
+                register();
+                break;
+        }
     }
 
-    public void help(){}
+    private void help(){}
 
-    public void quit(){
+    private void quit(){
     }
 
-    public void logIn(){
+    private void logIn(){
     }
 
-    public void Register(){
+    private void register(){
     }
 
 }
