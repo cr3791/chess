@@ -2,12 +2,12 @@ package ui;
 
 public class State {
     String state;
-    boolean gamePlay;
+    boolean loggedIn;
     boolean quit;
 
     public State(){
         state = "Logged Out";
-        gamePlay = false;
+        loggedIn = false;
         quit = false;
     }
 
@@ -15,20 +15,22 @@ public class State {
         return state;
     }
 
-    public boolean isGamePlay() {
-        return gamePlay;
-    }
-
-    public void setGamePlay(boolean active){
-        gamePlay = active;
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
     public void setLogIn(){
+        loggedIn = true;
         state = "Logged In";
     }
 
     public void setLogOut(){
+        loggedIn = false;
         state = "Logged Out";
+    }
+
+    public void setGamePlay(){
+        state = "In Game";
     }
 
     public void quit(){

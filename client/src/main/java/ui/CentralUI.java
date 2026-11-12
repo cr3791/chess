@@ -7,14 +7,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CentralUI {
+    private ServerFacade facade;
     private PostLoginUI postUI;
     private PreLoginUI preUI;
     private GamePlayUI gpUI;
     private State state;
 
     public CentralUI(){
+        facade = new ServerFacade();
         postUI = new PostLoginUI();
-        preUI = new PreLoginUI();
+        preUI = new PreLoginUI(facade);
         gpUI = new GamePlayUI();
         state = new State();
     }
@@ -46,14 +48,12 @@ public class CentralUI {
         }
         switch (state.getState()){
             case "Logged In":
-                if(state.isGamePlay()){
-
-                } else {
-
-                }
 
             case "Logged Out":
                 state = preUI.eval(input, state);
+
+            case "In Game":
+
         }
     }
 }
