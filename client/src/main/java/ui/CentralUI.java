@@ -49,10 +49,13 @@ public class CentralUI {
         switch (state.getState()){
             case "Logged In":
                 state = postUI.eval(input, state);
+                break;
             case "Logged Out":
                 state = preUI.eval(input, state);
+                break;
             case "In Game":
                 state = gpUI.eval(input, state);
+                break;
         }
         System.out.print(state.getMessage());
     }

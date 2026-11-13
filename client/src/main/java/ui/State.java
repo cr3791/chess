@@ -51,4 +51,8 @@ public class State {
     public String getMessage(){
         return message;
     }
+
+    public AuthData getAuthData(){
+        return authData;
+    }
 }

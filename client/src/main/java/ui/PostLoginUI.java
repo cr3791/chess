@@ -20,8 +20,7 @@ public class PostLoginUI {
                 state.setMessage(help());
                 break;
             case "logout":
-                System.out.print(logOut());
-                state.setLogOut();
+                state = logOut();
                 break;
             case "createGame":
                 System.out.println(createGame());
@@ -47,22 +46,24 @@ public class PostLoginUI {
         String create = "\n\tcreate <GAME NAME> - create an new game";
         String list = "\n\tlist - see all games";
         String join = "\n\tjoin <GAME ID> [WHITE|BLACK] - join an new game as white or black";
-        String observe = "\n\n\tobserve <GAME ID> - watch chess match without playing";
+        String observe = "\n\tobserve <GAME ID> - watch chess match without playing";
         String logout = "\n\tlogout - sign out from account";
         String help = "\n\thelp - see possible commands";
         String quit = "\n\tquit - end program";
         return String.format("%s%s%s%s%s%s%s\n\n",create,list,join,observe,logout,help,quit);
     }
 
-    private String logOut(){
+    private State logOut(){
         try {
-            facade.logOut();
-            return "\nYou have been successfully logged out\n";
-        } catch (IndexOutOfBoundsException ex){
-            return "You have not entered in the correct number of inputs. Please try again!";
+            facade.logOut(state.getAuthData().authToken());
+            state.setMessage("\nYou have been successfully logged out\n");
+            state.setLogOut();
+            return state;
         } catch (Throwable ex){
-            return String.format("\n%s",ex.getMessage());
+            String message = String.format("\n%s",ex.getMessage());
+            state.setMessage(message);
         }
+        return state;
     }
 
     private String createGame(){

@@ -34,8 +34,10 @@ public class ServerFacade {
         return gson.fromJson(response.body(),AuthData.class);
     }
 
-    public void logOut(){
-        var request = buildRequest("DELETE","/session",null);
+    public void logOut(String authToken) throws Exception{
+        var request = buildRequest("DELETE","/session",authToken);
+        var response = sendRequest(request);
+        checkResponse(response);
     }
 
     public void createGame(){
@@ -78,13 +80,13 @@ public class ServerFacade {
 
         switch(statusCode){
             case 400:
-                throw new Exception("This operation is invalid. Please check the help menu for the proper formatting.");
+                throw new Exception("This operation is invalid. Please check the help menu for the proper formatting.\n\n");
             case 401:
-                throw new Exception("Your authorization is invalid. Please try again!");
+                throw new Exception("Your authorization is invalid. Please try again!\n\n");
             case 402:
-                throw new Exception("What you just requested has already been taken. Please try something else!");
+                throw new Exception("What you just requested has already been taken. Please try something else!\n\n");
             case 500:
-                throw new Exception("The server failed to connect. Sorry for the inconvenience!");
+                throw new Exception("The server failed to connect. Sorry for the inconvenience!\n\n");
 
         }
     }
