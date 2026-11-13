@@ -60,8 +60,7 @@ public class ServerFacade {
     }
 
     public GameData playGame(int gameID, String color) throws Exception {
-        GameData game = new GameData(gameID, null, null,null,null);
-        JoinGame joinGameRequest = new JoinGame(color, game);
+        JoinGame joinGameRequest = new JoinGame(color, gameID);
         var request = buildRequest("PUT","/game",joinGameRequest);
         var response = sendRequest(request);
         checkResponse(response);
