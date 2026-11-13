@@ -2,10 +2,7 @@ package ui;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import model.AuthData;
-import model.GameData;
-import model.GameList;
-import model.UserData;
+import model.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ServerFacade {
 
@@ -52,12 +50,13 @@ public class ServerFacade {
     }
 
     public int createGame(String gameName) throws Exception{
-        var request = buildRequest("POST","/game",gameName);
+        CreateGame game = new CreateGame(gameName);
+        var request = buildRequest("POST","/game",game);
         var response = sendRequest(request);
         checkResponse(response);
         Gson gson = new Gson();
-        int gameID = gson.fromJson(response.body(),Integer.class);
-        return  gameID;
+        GameIdentifier gameID = gson.fromJson(response.body(),GameIdentifier.class);
+        return  gameID.gameID();
     }
 
     public void playGame(){
@@ -108,8 +107,8 @@ public class ServerFacade {
                 throw new Exception("This operation is invalid. Please check the help menu for the proper formatting.\n\n");
             case 401:
                 throw new Exception("Your authorization is invalid. Please try again!\n\n");
-            case 402:
-                throw new Exception("What you just requested has already been taken. Please try something else!\n\n");
+            case 403:
+                throw new Exception("This has already been taken. Please try something else!\n\n");
             case 500:
                 throw new Exception("The server failed to connect. Sorry for the inconvenience!\n\n");
 
