@@ -2,6 +2,7 @@ package ui;
 
 import com.google.gson.Gson;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -59,8 +61,13 @@ public class ServerFacade {
         var request = buildRequest("PUT","/game",null);
     }
 
-    public void getGameList(){
+    public GameData[] getGameList() throws Exception{
         var request = buildRequest("GET","/game",null);
+        var response = sendRequest(request);
+        checkResponse(response);
+        Gson gson = new Gson();
+        GameData[] games = gson.fromJson(response.body(),GameData[].class);
+        return games;
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){

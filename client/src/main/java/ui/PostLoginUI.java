@@ -1,5 +1,6 @@
 package ui;
 
+import model.GameData;
 import model.UserData;
 
 import java.util.List;
@@ -22,17 +23,17 @@ public class PostLoginUI {
             case "logout":
                 state = logOut();
                 break;
-            case "createGame":
+            case "create":
                 System.out.println(createGame());
                 break;
-            case "listGames":
-                System.out.println(listGames());
+            case "list":
+                listGames();
                 break;
-            case "playGame":
+            case "join":
                 System.out.println(playGame());
                 state.setGamePlay();
                 break;
-            case "observeGame":
+            case "observe":
                 System.out.println(observeGame());
                 state.setGamePlay();
                 break;
@@ -49,8 +50,7 @@ public class PostLoginUI {
         String observe = "\n\tobserve <GAME ID> - watch chess match without playing";
         String logout = "\n\tlogout - sign out from account";
         String help = "\n\thelp - see possible commands";
-        String quit = "\n\tquit - end program";
-        return String.format("%s%s%s%s%s%s%s\n\n",create,list,join,observe,logout,help,quit);
+        return String.format("%s%s%s%s%s%s%s\n\n",create,list,join,observe,logout,help);
     }
 
     private State logOut(){
@@ -71,8 +71,22 @@ public class PostLoginUI {
         return "";
     }
 
-    private String listGames(){
-        return "";
+    private void listGames(){
+        try {
+            GameData[] games = facade.getGameList();
+            String message = "\nHere is the list of games!\n\nGame List:";
+            StringBuilder gameList = new StringBuilder();
+            for(GameData game : games){
+                gameList.append(String.format("\n\tNAME: %s (ID: %d) --> ",game.gameName(),game.gameID()));
+                gameList.append(String.format("White Player: %s | ",game.whiteUsername()));
+                gameList.append(String.format("Black Player: %s",game.blackUsername()));
+            }
+            message += gameList.toString();
+            state.setMessage(message);
+        } catch (Throwable ex){
+            String message = String.format("\n%s",ex.getMessage());
+            state.setMessage(message);
+        }
     }
 
     private String playGame(){
