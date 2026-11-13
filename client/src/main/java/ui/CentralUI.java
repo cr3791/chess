@@ -58,5 +58,8 @@ public class CentralUI {
                 break;
         }
         System.out.print(state.getMessage());
+        if(state.getState().equals("In Game")){
+            System.out.print(state.drawGame());
+        }
     }
 }

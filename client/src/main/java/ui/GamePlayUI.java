@@ -28,26 +28,5 @@ public class GamePlayUI {
         return state;
     }
 
-    private String drawWhiteBoard(ChessBoard board){
-        StringBuilder drawnBoard = new StringBuilder();
-        for(int row = 1; row<=8; row++){
-            for (int col = 1; col <= 8; col++){
-                ChessPiece piece = board.getPiece(new ChessPosition(row,col));
-                if(piece != null){
-                    String pieceName = getPieceName(piece);
-                    drawnBoard.append("     ");
-                } else {
-                    drawnBoard.append(EscapeSequences.EMPTY);
-                }
-            }
-        }
-        return drawnBoard.toString();
-    }
 
-    private String getPieceName(ChessPiece piece){
-        String type = piece.getPieceType().toString();
-        String color = piece.getTeamColor().toString();
-        String pieceName = String.format("%s_%s",color,type);
-        return pieceName.toUpperCase();
-    }
 }
