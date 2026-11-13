@@ -17,7 +17,7 @@ public class PostLoginUI {
         this.state = currentState;
         switch (parameters.getFirst()){
             case "help":
-                System.out.print(help());
+                state.setMessage(help());
                 break;
             case "logout":
                 System.out.print(logOut());
@@ -56,8 +56,8 @@ public class PostLoginUI {
 
     private String logOut(){
         try {
-            facade.logOut(userData);
-            return String.format("\n%s has been successfully logged out\n", username);
+            facade.logOut();
+            return "\nYou have been successfully logged out\n";
         } catch (IndexOutOfBoundsException ex){
             return "You have not entered in the correct number of inputs. Please try again!";
         } catch (Throwable ex){

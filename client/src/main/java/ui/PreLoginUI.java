@@ -1,7 +1,9 @@
 package ui;
 
+import model.AuthData;
 import model.UserData;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PreLoginUI {
@@ -16,19 +18,17 @@ public class PreLoginUI {
         this.state = currentState;
         switch (parameters.getFirst()){
             case "help":
-                System.out.print(help());
+                state.setMessage(help());
                 break;
             case "quit":
-                System.out.print(quit());
+                state.setMessage(quit());
                 state.quit();
                 break;
             case "login":
-                System.out.println(logIn(parameters));
-                state.setLogIn();
+                state = logIn(parameters);
                 break;
             case "register":
-                System.out.println(register(parameters));
-                state.setLogIn();
+                state = register(parameters);
                 break;
             default:
                 System.out.println("That command is not recognized. Try typing 'Help' to see valid commands\n");
@@ -48,24 +48,29 @@ public class PreLoginUI {
         return "\nThank you for using 240 Chess!\n";
     }
 
-    private String logIn(List<String> parameters){
+    private State logIn(List<String> parameters){
         try {
             String username = parameters.get(1);
             String password = parameters.get(2);
 
             UserData userData = new UserData(username, password, null);
 
-            facade.logIn(userData);
-            return String.format("\nYou have successfully logged in as %s\n", username);
+            AuthData authData = facade.logIn(userData);
+            state.setLogIn(authData);
+            String message = String.format("\nYou have successfully logged in as %s\n", username);
+            state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
-            return "You have not entered in the correct number of inputs. Please try again!";
+            state.setMessage("You have not entered in the correct number of inputs. Please try again!");
+        } catch (IOException | InterruptedException ex){
+            state.setMessage("Connecting to the server failed.");
         } catch (Throwable ex){
-            return String.format("\n%s",ex.getMessage());
+            String message = String.format("\n%s",ex.getMessage());
+            state.setMessage(message);
         }
-
+        return state;
     }
 
-    private String register(List<String> parameters){
+    private State register(List<String> parameters){
         try {
             String username = parameters.get(1);
             String password = parameters.get(2);
@@ -73,13 +78,19 @@ public class PreLoginUI {
 
             UserData userData = new UserData(username, password, email);
 
-            facade.register(userData);
-            return String.format("\nYou have successfully registered as %s\n", username);
+            AuthData authData = facade.register(userData);
+            state.setLogIn(authData);
+            String message = String.format("\nYou have successfully registered as %s\n", username);
+            state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
-            return "You have not entered in the correct number of inputs. Please try again!";
+            state.setMessage("You have not entered in the correct number of inputs. Please try again!");
+        } catch (IOException | InterruptedException ex){
+            state.setMessage("Connecting to the server failed");
         } catch (Throwable ex){
-            return String.format("\n%s",ex.getMessage());
+            String message = String.format("\n%s",ex.getMessage());
+            state.setMessage(message);
         }
+        return state;
     }
 
 }

@@ -54,5 +54,6 @@ public class CentralUI {
             case "In Game":
                 state = gpUI.eval(input, state);
         }
+        System.out.print(state.getMessage());
     }
 }

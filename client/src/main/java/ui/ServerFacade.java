@@ -18,24 +18,20 @@ public class ServerFacade {
         serverURL = "http://localhost:8080";
     }
 
-    public void register(UserData userData) throws Exception{
-        try {
-            var request = buildRequest("POST", "/user", userData);
-            var response = sendRequest(request);
-            handleResponse(response);
-        } catch (IOException | InterruptedException ex){
-            System.out.println("Http Request has failed");
-        }
+    public AuthData register(UserData userData) throws Exception{
+        var request = buildRequest("POST", "/user", userData);
+        var response = sendRequest(request);
+        checkResponse(response);
+        Gson gson = new Gson();
+        return gson.fromJson(response.body(),AuthData.class);
     }
 
-    public void logIn(UserData userData) throws Exception{
-        try {
-            var request = buildRequest("POST","/session",userData);
-            var response = sendRequest(request);
-            handleResponse(response);
-        } catch (IOException | InterruptedException ex){
-            System.out.println("Http Request has failed");
-        }
+    public AuthData logIn(UserData userData) throws Exception{
+        var request = buildRequest("POST","/session",userData);
+        var response = sendRequest(request);
+        checkResponse(response);
+        Gson gson = new Gson();
+        return gson.fromJson(response.body(),AuthData.class);
     }
 
     public void logOut(){
@@ -77,7 +73,7 @@ public class ServerFacade {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    private void handleResponse(HttpResponse<String> response) throws Exception {
+    private void checkResponse(HttpResponse<String> response) throws Exception {
         var statusCode = response.statusCode();
 
         switch(statusCode){
