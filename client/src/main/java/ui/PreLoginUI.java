@@ -55,8 +55,8 @@ public class PreLoginUI {
 
             UserData userData = new UserData(username, password, null);
 
-            AuthData authData = facade.logIn(userData);
-            state.setLogIn(authData);
+            String usernameReturn = facade.logIn(userData);
+            state.setLogIn(usernameReturn);
             String message = String.format("\nYou have successfully logged in as %s\n", username);
             state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
@@ -78,8 +78,8 @@ public class PreLoginUI {
 
             UserData userData = new UserData(username, password, email);
 
-            AuthData authData = facade.register(userData);
-            state.setLogIn(authData);
+            String usernameReturn = facade.register(userData);
+            state.setLogIn(usernameReturn);
             String message = String.format("\nYou have successfully registered as %s\n", username);
             state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){

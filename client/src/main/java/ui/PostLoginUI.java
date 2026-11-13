@@ -55,8 +55,9 @@ public class PostLoginUI {
 
     private State logOut(){
         try {
-            facade.logOut(state.getAuthData().authToken());
-            state.setMessage("\nYou have been successfully logged out\n");
+            facade.logOut();
+            String message = String.format("\n%s has been successfully logged out\n",state.getUsername());
+            state.setMessage(message);
             state.setLogOut();
             return state;
         } catch (Throwable ex){

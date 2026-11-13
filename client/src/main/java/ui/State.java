@@ -3,32 +3,33 @@ package ui;
 import model.AuthData;
 
 public class State {
-    String state;
-    boolean loggedIn;
-    boolean quit;
-    private AuthData authData = null;
-    String message;
+    private String state;
+    private boolean loggedIn;
+    private boolean quit;
+    private String username;
+    private String message;
 
     public State(){
         state = "Logged Out";
         loggedIn = false;
         quit = false;
         message = "";
+        username = null;
     }
 
     public String getState(){
         return state;
     }
 
-    public void setLogIn(AuthData authData){
-        this.authData = authData;
+    public void setLogIn(String username){
+        this.username = username;
         loggedIn = true;
         state = "Logged In";
     }
 
     public void setLogOut(){
         loggedIn = false;
-        authData = null;
+        username = null;
         state = "Logged Out";
     }
 
@@ -52,7 +53,7 @@ public class State {
         return message;
     }
 
-    public AuthData getAuthData(){
-        return authData;
+    public String getUsername(){
+        return username;
     }
 }

@@ -14,30 +14,37 @@ public class ServerFacade {
 
     private final HttpClient client = HttpClient.newHttpClient();
     private final String serverURL;
+    private String authToken;
+
     public ServerFacade(){
         serverURL = "http://localhost:8080";
+        authToken = null;
     }
 
-    public AuthData register(UserData userData) throws Exception{
+    public String register(UserData userData) throws Exception{
         var request = buildRequest("POST", "/user", userData);
         var response = sendRequest(request);
         checkResponse(response);
         Gson gson = new Gson();
-        return gson.fromJson(response.body(),AuthData.class);
+        AuthData authdata = gson.fromJson(response.body(),AuthData.class);
+        return authdata.username();
     }
 
-    public AuthData logIn(UserData userData) throws Exception{
+    public String logIn(UserData userData) throws Exception{
         var request = buildRequest("POST","/session",userData);
         var response = sendRequest(request);
         checkResponse(response);
         Gson gson = new Gson();
-        return gson.fromJson(response.body(),AuthData.class);
+        AuthData authdata = gson.fromJson(response.body(),AuthData.class);
+        authToken = authdata.authToken();
+        return authdata.username();
     }
 
-    public void logOut(String authToken) throws Exception{
-        var request = buildRequest("DELETE","/session",authToken);
+    public void logOut() throws Exception{
+        var request = buildRequest("DELETE","/session",null);
         var response = sendRequest(request);
         checkResponse(response);
+        authToken = null;
     }
 
     public void createGame(){
@@ -58,9 +65,13 @@ public class ServerFacade {
 
     private HttpRequest buildRequest(String method, String path, Object body){
         var request = HttpRequest.newBuilder(URI.create(serverURL+path))
-                .method(method, makeBody(body))
-                .build();
-        return request;
+                .method(method, makeBody(body));
+
+        if(authToken != null){
+            request.setHeader("authorization",authToken);
+        }
+
+        return request.build();
     }
 
     private static HttpRequest.BodyPublisher makeBody(Object body){
