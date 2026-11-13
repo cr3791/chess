@@ -15,9 +15,9 @@ public class CentralUI {
 
     public CentralUI(){
         facade = new ServerFacade();
-        postUI = new PostLoginUI();
+        postUI = new PostLoginUI(facade);
         preUI = new PreLoginUI(facade);
-        gpUI = new GamePlayUI();
+        gpUI = new GamePlayUI(facade);
         state = new State();
     }
 
@@ -48,12 +48,11 @@ public class CentralUI {
         }
         switch (state.getState()){
             case "Logged In":
-
+                state = postUI.eval(input, state);
             case "Logged Out":
                 state = preUI.eval(input, state);
-
             case "In Game":
-
+                state = gpUI.eval(input, state);
         }
     }
 }

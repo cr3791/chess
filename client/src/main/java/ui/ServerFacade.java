@@ -9,7 +9,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
 
 public class ServerFacade {
 
@@ -19,7 +18,7 @@ public class ServerFacade {
         serverURL = "http://localhost:8080";
     }
 
-    public void register(UserData userData) {
+    public void register(UserData userData) throws Exception{
         try {
             var request = buildRequest("POST", "/user", userData);
             var response = sendRequest(request);
@@ -29,28 +28,34 @@ public class ServerFacade {
         }
     }
 
-    public void logIn(){
-        var request = buildRequest(".post","/session",null);
+    public void logIn(UserData userData) throws Exception{
+        try {
+            var request = buildRequest("POST","/session",userData);
+            var response = sendRequest(request);
+            handleResponse(response);
+        } catch (IOException | InterruptedException ex){
+            System.out.println("Http Request has failed");
+        }
     }
 
     public void logOut(){
-        var request = buildRequest(".delete","/session",null);
+        var request = buildRequest("DELETE","/session",null);
     }
 
     public void createGame(){
-        var request = buildRequest(".post","/game",null);
+        var request = buildRequest("POST","/game",null);
     }
 
     public void playGame(){
-        var request = buildRequest(".put","/game",null);
+        var request = buildRequest("PUT","/game",null);
     }
 
     public void observeGame(){
-        var request = buildRequest(".put","/game",null);
+        var request = buildRequest("PUT","/game",null);
     }
 
     public void getGameList(){
-        var request = buildRequest(".get","/game",null);
+        var request = buildRequest("GET","/game",null);
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){
@@ -72,15 +77,18 @@ public class ServerFacade {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    private void handleResponse(HttpResponse<String> response){
+    private void handleResponse(HttpResponse<String> response) throws Exception {
         var statusCode = response.statusCode();
 
-        if(statusCode == 200) {
-            System.out.println(response.body());
-            var gson = new Gson();
-            AuthData authData = gson.fromJson(response.body(), AuthData.class);
-            System.out.println(authData.toString());
-        } else {
+        switch(statusCode){
+            case 400:
+                throw new Exception("This operation is invalid. Please check the help menu for the proper formatting.");
+            case 401:
+                throw new Exception("Your authorization is invalid. Please try again!");
+            case 402:
+                throw new Exception("What you just requested has already been taken. Please try something else!");
+            case 500:
+                throw new Exception("The server failed to connect. Sorry for the inconvenience!");
 
         }
     }

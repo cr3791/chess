@@ -5,14 +5,15 @@ import model.UserData;
 import java.util.List;
 
 public class PreLoginUI {
-    private ServerFacade facade;
-    private String serverURL;
+    private final ServerFacade facade;
+    private State state;
     public PreLoginUI(ServerFacade facade){
         this.facade = facade;
+        this.state = new State();
     }
 
     public State eval(List<String> parameters, State currentState){
-        State state = currentState;
+        this.state = currentState;
         switch (parameters.getFirst()){
             case "help":
                 System.out.print(help());
@@ -22,7 +23,7 @@ public class PreLoginUI {
                 state.quit();
                 break;
             case "login":
-                logIn();
+                System.out.println(logIn(parameters));
                 state.setLogIn();
                 break;
             case "register":
@@ -47,20 +48,38 @@ public class PreLoginUI {
         return "\nThank you for using 240 Chess!\n";
     }
 
-    private void logIn(){
+    private String logIn(List<String> parameters){
+        try {
+            String username = parameters.get(1);
+            String password = parameters.get(2);
+
+            UserData userData = new UserData(username, password, null);
+
+            facade.logIn(userData);
+            return String.format("\nYou have successfully logged in as %s\n", username);
+        } catch (IndexOutOfBoundsException ex){
+            return "You have not entered in the correct number of inputs. Please try again!";
+        } catch (Throwable ex){
+            return String.format("\n%s",ex.getMessage());
+        }
 
     }
 
     private String register(List<String> parameters){
-        String username = parameters.get(1);
-        String password = parameters.get(2);
-        String email = parameters.get(3);
+        try {
+            String username = parameters.get(1);
+            String password = parameters.get(2);
+            String email = parameters.get(3);
 
-        UserData userData = new UserData(username, password, email);
+            UserData userData = new UserData(username, password, email);
 
-        facade.register(userData);
-
-        return String.format("\nYou have successfully registered as %s\n",username);
+            facade.register(userData);
+            return String.format("\nYou have successfully registered as %s\n", username);
+        } catch (IndexOutOfBoundsException ex){
+            return "You have not entered in the correct number of inputs. Please try again!";
+        } catch (Throwable ex){
+            return String.format("\n%s",ex.getMessage());
+        }
     }
 
 }
