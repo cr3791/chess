@@ -35,7 +35,7 @@ public class CentralUI {
                     break;
                 }
             } catch (RuntimeException ex){
-                System.out.print("You Failure");
+                System.out.print("You Failure\n\n");
             }
         }
     }

@@ -39,7 +39,7 @@ public class PostLoginUI {
                 state.setGamePlay();
                 break;
             default:
-                System.out.println("That command is not recognized. Try typing 'Help' to see valid commands\n");
+                System.out.println("That command is not recognized. Try typing 'Help' to see valid commands\n\n");
         }
         return state;
     }

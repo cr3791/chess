@@ -60,9 +60,9 @@ public class PreLoginUI {
             String message = String.format("\nYou have successfully logged in as %s\n\n", username);
             state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
-            state.setMessage("You have not entered in the correct number of inputs. Please try again!");
+            state.setMessage("\nYou have not entered in the correct number of inputs. Please try again!\n\n");
         } catch (IOException | InterruptedException ex){
-            state.setMessage("Connecting to the server failed.");
+            state.setMessage("\nConnecting to the server failed.\n\n");
         } catch (Throwable ex){
             String message = String.format("\n%s",ex.getMessage());
             state.setMessage(message);
@@ -83,11 +83,11 @@ public class PreLoginUI {
             String message = String.format("\nYou have successfully registered as %s\n\n", username);
             state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
-            state.setMessage("You have not entered in the correct number of inputs. Please try again!");
+            state.setMessage("\nYou have not entered in the correct number of inputs. Please try again!\n\n");
         } catch (IOException | InterruptedException ex){
-            state.setMessage("Connecting to the server failed");
+            state.setMessage("\nConnecting to the server failed\n\n");
         } catch (Throwable ex){
-            String message = String.format("\n%s",ex.getMessage());
+            String message = String.format("\n%s\n\n",ex.getMessage());
             state.setMessage(message);
         }
         return state;
