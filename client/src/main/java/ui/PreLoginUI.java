@@ -57,7 +57,7 @@ public class PreLoginUI {
 
             String usernameReturn = facade.logIn(userData);
             state.setLogIn(usernameReturn);
-            String message = String.format("\nYou have successfully logged in as %s\n", username);
+            String message = String.format("\nYou have successfully logged in as %s\n\n", username);
             state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
             state.setMessage("You have not entered in the correct number of inputs. Please try again!");
@@ -80,7 +80,7 @@ public class PreLoginUI {
 
             String usernameReturn = facade.register(userData);
             state.setLogIn(usernameReturn);
-            String message = String.format("\nYou have successfully registered as %s\n", username);
+            String message = String.format("\nYou have successfully registered as %s\n\n", username);
             state.setMessage(message);
         } catch (IndexOutOfBoundsException ex){
             state.setMessage("You have not entered in the correct number of inputs. Please try again!");

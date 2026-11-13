@@ -1,8 +1,10 @@
 package ui;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.AuthData;
 import model.GameData;
+import model.GameList;
 import model.UserData;
 
 import java.io.IOException;
@@ -49,8 +51,13 @@ public class ServerFacade {
         authToken = null;
     }
 
-    public void createGame(){
-        var request = buildRequest("POST","/game",null);
+    public int createGame(String gameName) throws Exception{
+        var request = buildRequest("POST","/game",gameName);
+        var response = sendRequest(request);
+        checkResponse(response);
+        Gson gson = new Gson();
+        int gameID = gson.fromJson(response.body(),Integer.class);
+        return  gameID;
     }
 
     public void playGame(){
@@ -61,13 +68,13 @@ public class ServerFacade {
         var request = buildRequest("PUT","/game",null);
     }
 
-    public GameData[] getGameList() throws Exception{
+    public ArrayList<GameData> getGameList() throws Exception{
         var request = buildRequest("GET","/game",null);
         var response = sendRequest(request);
         checkResponse(response);
         Gson gson = new Gson();
-        GameData[] games = gson.fromJson(response.body(),GameData[].class);
-        return games;
+        GameList games = gson.fromJson(response.body(),GameList.class);
+        return games.games();
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){
