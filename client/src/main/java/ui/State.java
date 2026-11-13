@@ -1,6 +1,7 @@
 package ui;
 
 import model.AuthData;
+import model.GameData;
 
 public class State {
     private String state;
@@ -8,6 +9,7 @@ public class State {
     private boolean quit;
     private String username;
     private String message;
+    private GameData currentGame;
 
     public State(){
         state = "Logged Out";
@@ -15,6 +17,7 @@ public class State {
         quit = false;
         message = "";
         username = null;
+        currentGame = null;
     }
 
     public String getState(){
@@ -25,12 +28,14 @@ public class State {
         this.username = username;
         loggedIn = true;
         state = "Logged In";
+        currentGame = null;
     }
 
     public void setLogOut(){
         loggedIn = false;
         username = null;
         state = "Logged Out";
+        currentGame = null;
     }
 
     public void setGamePlay(){
@@ -55,5 +60,13 @@ public class State {
 
     public String getUsername(){
         return username;
+    }
+
+    public void setGame(GameData game){
+        this.currentGame = game;
+    }
+
+    public GameData getGameData(){
+        return currentGame;
     }
 }

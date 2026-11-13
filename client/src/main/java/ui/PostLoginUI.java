@@ -1,7 +1,6 @@
 package ui;
 
 import model.GameData;
-import model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +30,10 @@ public class PostLoginUI {
                 listGames();
                 break;
             case "join":
-                System.out.println(playGame());
-                state.setGamePlay();
+                playGame(parameters);
                 break;
             case "observe":
-                System.out.println(observeGame());
+                observeGame(parameters);
                 state.setGamePlay();
                 break;
             default:
@@ -111,11 +109,51 @@ public class PostLoginUI {
         }
     }
 
-    private String playGame(){
-        return "";
+    private void playGame(List<String> parameters){
+        try{
+            int gameID = Integer.parseInt(parameters.get(1));
+            String color = parameters.get(2);
+            color = checkColor(color);
+            GameData game = facade.playGame(gameID, color);
+
+            state.setGamePlay();
+            state.setGame(game);
+            String message = String.format("\nYou have successfully joined the game!\n\n");
+            state.setMessage(message);
+        } catch (NumberFormatException ex){
+            state.setMessage("Please provide a valid integer for the gameID");
+        } catch (IndexOutOfBoundsException ex){
+            state.setMessage("You have not entered in the correct number of inputs. Please try again!");
+        } catch (Throwable ex){
+            String message = String.format("\n%s",ex.getMessage());
+            state.setMessage(message);
+        }
     }
 
-    private String observeGame(){
-        return "";
+    private String checkColor(String color) throws Exception{
+        if(color.equalsIgnoreCase("BLACK")){
+            return "BLACK";
+        } else if (color.equalsIgnoreCase("WHITE")){
+            return "WHITE";
+        } else {
+            throw new Exception("Please enter a valid player color");
+        }
+    }
+
+    private void observeGame(List<String> parameters){
+        try{
+            int gameID = Integer.parseInt(parameters.get(1));
+            state.setGame(facade.observeGame(gameID));
+            state.setGamePlay();
+            String message = String.format("\nYou are now observing the game!\n\n");
+            state.setMessage(message);
+        } catch (NumberFormatException ex){
+            state.setMessage("Please provide a valid integer for the gameID");
+        } catch (IndexOutOfBoundsException ex){
+            state.setMessage("You have not entered in the correct number of inputs. Please try again!");
+        } catch (Throwable ex){
+            String message = String.format("\n%s",ex.getMessage());
+            state.setMessage(message);
+        }
     }
 }

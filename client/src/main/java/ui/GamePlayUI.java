@@ -17,6 +17,14 @@ public class GamePlayUI {
 
     public State eval(List<String> inputs, State currentState){
         this.state = currentState;
+        switch (inputs.getFirst()) {
+            default:
+                //leave
+                state.setLogIn(state.getUsername());
+                state.setMessage("\nYou have successfully left the game\n\n");
+                break;
+
+        }
         return state;
     }
 

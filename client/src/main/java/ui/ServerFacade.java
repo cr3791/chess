@@ -59,12 +59,30 @@ public class ServerFacade {
         return  gameID.gameID();
     }
 
-    public void playGame(){
-        var request = buildRequest("PUT","/game",null);
+    public GameData playGame(int gameID, String color) throws Exception {
+        GameData game = new GameData(gameID, null, null,null,null);
+        JoinGame joinGameRequest = new JoinGame(color, game);
+        var request = buildRequest("PUT","/game",joinGameRequest);
+        var response = sendRequest(request);
+        checkResponse(response);
+
+        ArrayList<GameData> gameList = getGameList();
+        for (GameData findGame : gameList){
+            if (findGame.gameID() == gameID){
+                return findGame;
+            }
+        }
+        throw new Exception("\nWe cannot find the game you are looking for. Please try again\n\n");
     }
 
-    public void observeGame(){
-        var request = buildRequest("PUT","/game",null);
+    public GameData observeGame(int gameID) throws Exception {
+        ArrayList<GameData> gameList = getGameList();
+        for (GameData game : gameList){
+            if (game.gameID() == gameID){
+                return game;
+            }
+        }
+        throw new Exception("\nThe game you requested does not exist. Please use a valid Game ID.\n\n");
     }
 
     public ArrayList<GameData> getGameList() throws Exception{
