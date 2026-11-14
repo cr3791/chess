@@ -1,3 +1,5 @@
+package client;
+
 import dataaccess.sql.MySQLAuthDataAccess;
 import dataaccess.sql.MySQLGameDataAccess;
 import dataaccess.sql.MySQLUserDataAccess;
