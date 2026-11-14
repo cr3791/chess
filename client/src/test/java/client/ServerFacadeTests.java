@@ -3,6 +3,7 @@ import dataaccess.sql.MySQLAuthDataAccess;
 import dataaccess.sql.MySQLGameDataAccess;
 import dataaccess.sql.MySQLUserDataAccess;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -192,4 +193,120 @@ public class ServerFacadeTests {
         }
     }
 
+    @Test
+    public void joinGameAsWhite(){
+        UserData user1 = new UserData("currently", "testing","yay");
+
+        try {
+            facade.register(user1);
+            int gameID = facade.createGame("yayay");
+            try{
+                GameData game = facade.playGame(gameID,"WHITE");
+                assertNotNull(game);
+                assertEquals("currently",game.whiteUsername());
+            } catch (Exception ex){
+                fail("join game failed");
+            }
+        } catch (Exception ex){
+            fail("set up failed");
+        }
+    }
+
+    @Test
+    public void joinGameAsBlack(){
+        UserData user1 = new UserData("currently", "testing","yay");
+
+        try {
+            facade.register(user1);
+            int gameID = facade.createGame("yayay");
+            try{
+                GameData game = facade.playGame(gameID,"BLACK");
+                assertNotNull(game);
+                assertEquals("currently",game.blackUsername());
+            } catch (Exception ex){
+                fail("join game failed");
+            }
+        } catch (Exception ex){
+            fail("set up failed");
+        }
+    }
+
+    @Test
+    public void joinBadGameIDFail() {
+        UserData user1 = new UserData("currently", "testing", "yay");
+
+        try {
+            facade.register(user1);
+            facade.createGame("yayay");
+            try {
+                GameData game = facade.playGame(-4, "BLACK");
+                fail();
+            } catch (Exception ex) {
+                assert (true);
+            }
+        } catch (Exception ex) {
+            fail("set up failed");
+        }
+    }
+
+    @Test
+    public void observeGameSuccess() {
+        UserData user1 = new UserData("currently", "testing", "yay");
+
+        try {
+            facade.register(user1);
+            int gameID = facade.createGame("yayay");
+            try {
+                GameData game = facade.observeGame(gameID);
+                assertNotNull(game);
+            } catch (Exception ex){
+                fail("observe game failed");
+            }
+        } catch (Exception ex) {
+            fail("set up failed");
+        }
+    }
+
+    @Test
+    public void observeBadGameIDFail() {
+        UserData user1 = new UserData("currently", "testing", "yay");
+
+        try {
+            facade.register(user1);
+            int gameID = facade.createGame("yayay");
+            try {
+                GameData game = facade.observeGame(33);
+                fail();
+            } catch (Exception ex){
+                assert(true);
+            }
+        } catch (Exception ex) {
+            fail("set up failed");
+        }
+    }
+
+    @Test
+    public void listGameSuccess(){
+        UserData user1 = new UserData("currently", "testing", "yay");
+        try {
+            facade.register(user1);
+            ArrayList<Integer> gameIDs = new ArrayList<>();
+            gameIDs.add(facade.createGame("yayay"));
+            gameIDs.add(facade.createGame("nope"));
+            gameIDs.add(facade.createGame("lol"));
+            gameIDs.add(facade.createGame("haha"));
+            try {
+                ArrayList<GameData> games = facade.getGameList();
+                for(GameData game : games){
+                    if(!gameIDs.contains(game.gameID())){
+                        fail();
+                    }
+                }
+            } catch (Exception ex){
+                fail("game list failed");
+            }
+        } catch (Exception ex) {
+            fail("set up failed");
+        }
+    }
 }
