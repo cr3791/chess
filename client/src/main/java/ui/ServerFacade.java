@@ -29,6 +29,7 @@ public class ServerFacade {
         checkResponse(response);
         Gson gson = new Gson();
         AuthData authdata = gson.fromJson(response.body(),AuthData.class);
+        authToken = authdata.authToken();
         return authdata.username();
     }
 
@@ -91,6 +92,18 @@ public class ServerFacade {
         Gson gson = new Gson();
         GameList games = gson.fromJson(response.body(),GameList.class);
         return games.games();
+    }
+
+    public void clear(){
+        try {
+            var request = HttpRequest.newBuilder(URI.create(serverURL+"/db"))
+                    .method("DELETE",makeBody(null))
+                    .build();
+            var response = sendRequest(request);
+            checkResponse(response);
+        } catch (Exception ex) {
+            System.out.println("Something terrible has happened");
+        }
     }
 
     private HttpRequest buildRequest(String method, String path, Object body){

@@ -88,10 +88,12 @@ public class ChessService {
         }
     }
 
-    public int createGame(String authToken, String gameName) throws BadRequestException, UnauthorizedUserException, DataAccessException {
+    public int createGame(String authToken, String gameName) throws
+            BadRequestException, UnauthorizedUserException, DataAccessException, AlreadyTakenException{
         try{
             checkCreateGameInputs(authToken, gameName);
             AuthData authData = authDataAccess.getAuthData(authToken);
+            checkGameNameOpen(gameName, authToken);
 
             if(authData!=null){
                 return gameDataAccess.createGame(gameName);
@@ -102,9 +104,19 @@ public class ChessService {
             throw new BadRequestException("");
         } catch (DataAccessException ex){
             throw new DataAccessException("Unable to access Database at createGame");
+        } catch (AlreadyTakenException e) {
+            throw new AlreadyTakenException("name already taken");
         }
     }
 
+    private void checkGameNameOpen(String gameName, String authToken) throws UnauthorizedUserException, DataAccessException, AlreadyTakenException {
+        ArrayList<GameData> games = listGames(authToken);
+        for(GameData game : games){
+            if(game.gameName().equals(gameName)){
+                throw new AlreadyTakenException("This name has already been taken");
+            }
+        }
+    }
     public void joinGame(String a,GameData g,String c)throws AlreadyTakenException,BadRequestException,UnauthorizedUserException,DataAccessException{
         try{
             String authToken = a;

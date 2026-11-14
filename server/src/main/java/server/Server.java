@@ -145,6 +145,10 @@ public class Server {
             ctx.status(500);
             String error = new Gson().toJson(Map.of("message", "Error: fail to connect to server"));
             ctx.result(error);
+        } catch (AlreadyTakenException ex){
+            ctx.status(403);
+            String error = new Gson().toJson(Map.of("message", "Error: already taken"));
+            ctx.result(error);
         }
     }
 
