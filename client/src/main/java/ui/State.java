@@ -85,33 +85,25 @@ public class State {
                 } else {
                     drawBoard[row][col] = addBackground(row,col);
                 }
-
-                if(col == 9){
-                    drawBoard[row][col]+=String.format("%s\n",EscapeSequences.RESET_BG_COLOR);
-                }
             }
         }
 
-        switch(checkTeam()){
-            case "WHITE":
-                return buildBoard(drawBoard);
-            case "BLACK":
-                drawBoard = flipBoard(drawBoard);
-                return buildBoard(drawBoard);
+        String color = checkTeam();
+        if(color.equals("BLACK")){
+            drawBoard = flipBoard(drawBoard);
         }
-        return "";
+        return buildBoard(drawBoard);
     }
 
     private String[][] flipBoard(String[][] boardPieces){
-        String[][] newBoard = new String[10][10];
-
-        for(int row = 0; row < 10; row++){
+        for(int row = 0; row < 5; row++){
             for(int col = 0; col < 10; col++){
-                newBoard[row][col] = boardPieces[9-row][9-col];
+                String save = boardPieces[row][col];
+                boardPieces[row][col] = boardPieces[9-row][9-col];
+                boardPieces[9-row][9-col] = save;
             }
         }
-
-        return newBoard;
+        return boardPieces;
     }
 
     private String buildBoard(String[][] boardPieces){
@@ -119,6 +111,9 @@ public class State {
         for(int i = 9; i >=0; i--){
             for(int j = 0; j<10; j++){
                 build.append(boardPieces[i][j]);
+                if(j == 9){
+                    build.append(String.format("%s\n",EscapeSequences.RESET_BG_COLOR));
+                }
             }
         }
         return build + "\n" + EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.RESET_TEXT_BOLD_FAINT;

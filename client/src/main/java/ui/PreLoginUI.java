@@ -52,7 +52,9 @@ public class PreLoginUI {
         try {
             String username = parameters.get(1);
             String password = parameters.get(2);
-
+            if(parameters.size()>3){
+                throw new Exception("Please only put in a username and password\n\n");
+            }
             UserData userData = new UserData(username, password, null);
 
             String usernameReturn = facade.logIn(userData);
@@ -64,7 +66,7 @@ public class PreLoginUI {
         } catch (IOException | InterruptedException ex){
             state.setMessage("\nConnecting to the server failed.\n\n");
         } catch (Throwable ex){
-            String message = String.format("\n%s",ex.getMessage());
+            String message = String.format("\n%s\n\n",ex.getMessage());
             state.setMessage(message);
         }
         return state;
@@ -92,5 +94,4 @@ public class PreLoginUI {
         }
         return state;
     }
-
 }
