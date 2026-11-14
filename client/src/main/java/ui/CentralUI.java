@@ -14,7 +14,7 @@ public class CentralUI {
     private State state;
 
     public CentralUI(){
-        facade = new ServerFacade();
+        facade = new ServerFacade(8080);
         postUI = new PostLoginUI(facade);
         preUI = new PreLoginUI(facade);
         gpUI = new GamePlayUI(facade);

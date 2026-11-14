@@ -1,5 +1,3 @@
-package client;
-
 import dataaccess.sql.MySQLAuthDataAccess;
 import dataaccess.sql.MySQLGameDataAccess;
 import dataaccess.sql.MySQLUserDataAccess;
@@ -24,8 +22,8 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        facade = new ServerFacade();
         var port = server.run(0);
+        facade = new ServerFacade(port);
         System.out.println("Started test HTTP server on " + port);
     }
 
