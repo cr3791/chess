@@ -1,8 +1,6 @@
-import dataaccess.UserDataAccess;
 import dataaccess.sql.MySQLAuthDataAccess;
 import dataaccess.sql.MySQLGameDataAccess;
 import dataaccess.sql.MySQLUserDataAccess;
-import model.AuthData;
 import model.GameData;
 import model.UserData;
 import org.junit.jupiter.api.*;
@@ -11,7 +9,6 @@ import service.ChessService;
 import ui.ServerFacade;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +23,7 @@ public class ServerFacadeTests {
     public static void init() {
         server = new Server();
         facade = new ServerFacade();
-        var port = server.run(8080);
+        var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
     }
 
