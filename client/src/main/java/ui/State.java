@@ -3,7 +3,6 @@ package ui;
 import chess.ChessBoard;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import model.AuthData;
 import model.GameData;
 
 public class State {
